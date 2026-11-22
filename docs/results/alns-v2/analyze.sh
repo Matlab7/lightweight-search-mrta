@@ -1,6 +1,6 @@
 #!/bin/bash
 # Tables and figures of the ALNS v2 dev campaign (runs/alns/v2g) -> docs/results/alns-v2
-cd /home/jovyan/dev/cbba-sota
+cd "$(dirname "$0")/../../.." || exit 1
 OUT=docs/results/alns-v2; mkdir -p $OUT
 P=".venv/bin/python scripts/alns_ablation.py"
 W1B="v2g/w1-t0.5 v2g/w1-t1 v2g/w1-t2 v2g/w1-t5 v2g/w1-B1"

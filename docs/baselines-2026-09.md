@@ -301,9 +301,10 @@ PCPSAT 7, ALNS2 2), CTAS-D rows ended within 1.05 x B1, and no lane process died
 ## Reproduce
 
 ```
-scripts/campaign_worktree.sh <commit>           # clean worktree at /home/jovyan/dev/cbba-sota-run
-cd /home/jovyan/dev/cbba-sota-run && export PYTHONPATH=$PWD
-PY=/home/jovyan/dev/cbba-sota/.venv/bin/python
+repo="$(git rev-parse --show-toplevel)"         # run from the main checkout
+"$repo/scripts/campaign_worktree.sh" <commit>
+cd "$repo/.worktrees/run" && export PYTHONPATH="$PWD"
+PY="$repo/.venv/bin/python"
 # dev tuning (commit 3fa7e7e; runs/tune_dev), per stage:
 $PY scripts/anytime.py tune --settings SA-BT-25-5-50 SA-BT-50-5-50 SA-AT-50-5-50 MA-AT-25-5-50 MA-AT-50-5-50 --n 10 \
   --variants PCPSAT:sub_time=0.2 PCPSAT:sub_time=0.5 PCPSAT:sub_time=2 PCPSAT:sub_time=5 CPFULL:knn=0 CPFULL:knn=10 \

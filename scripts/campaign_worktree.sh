@@ -5,11 +5,11 @@
 # worktree, so that cbba_sota is imported from it rather than from the editable install; the rows then record the
 # worktree's clean commit as their code version.
 #
-# Usage: scripts/campaign_worktree.sh [COMMIT] [DIR]        (default DIR: <repo>-run; an existing DIR is moved to COMMIT)
+# Usage: scripts/campaign_worktree.sh [COMMIT] [DIR] (default DIR: <repo>/.worktrees/run; reuse at COMMIT if it exists)
 set -euo pipefail
 repo="$(cd "$(dirname "$0")/.." && pwd)"
 commit="$(git -C "$repo" rev-parse --verify "${1:-HEAD}^{commit}")"
-dest="${2:-$repo-run}"
+dest="${2:-$repo/.worktrees/run}"
 if [ -e "$dest/.git" ]; then
   git -C "$dest" checkout -q --detach "$commit"
 else

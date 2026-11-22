@@ -44,7 +44,7 @@ Reference versions from the old server:
 - Host: 96-CPU cgroup quota.
 
 ```bash
-git clone https://github.com/Matlab7/cbba-sota && cd cbba-sota
+git clone https://github.com/Matlab7/lightweight-search-mrta && cd lightweight-search-mrta
 git config user.name Matlab7 && git config user.email crdhsh@gmail.com
 # push auth: gh CLI logged in as Matlab7, then
 git config credential.helper "" && git config --add credential.helper '!gh auth git-credential'

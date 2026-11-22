@@ -20,6 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 LIMIT = 25 * 1024 * 1024
 REDACT = [  # (pattern, replacement), applied in order to every text file
+    (r"/home/jovyan/dev/paperworks/lightweight-search-mrta/\.worktrees/run", "<campaign-worktree>"),
+    (r"/home/jovyan/dev/paperworks/lightweight-search-mrta", "<repo>"),
     (r"/home/jovyan/dev/cbba-sota-run", "<campaign-worktree>"),
     (r"/home/jovyan/dev/cbba-sota", "<repo>"),
     (r"/home/jovyan/dev/cbja", "<other-project>"),
@@ -33,10 +35,13 @@ REDACT = [  # (pattern, replacement), applied in order to every text file
     # the project's and a sibling project's names would lead to the (public) repositories: neutral names instead
     (r"cbba_sota", "mrta_alns"),
     (r"cbba-sota", "mrta-alns"),
+    (r"lightweight-search-mrta", "mrta-alns"),
     (r"CBJA", "REFSIM"),
     (r"cbja", "refsim"),
 ]
-FORBIDDEN = re.compile(r"dhcho|jovyan|Matlab7|crdhsh|cbba_sota|cbba-sota|cbja", re.IGNORECASE)
+FORBIDDEN = re.compile(
+    r"dhcho|jovyan|Matlab7|crdhsh|cbba_sota|cbba-sota|lightweight-search-mrta|cbja", re.IGNORECASE
+)
 TEXT = {".py", ".md", ".txt", ".csv", ".json", ".jsonl", ".sh", ".toml", ".patch", ".tex", ".yaml", ".yml", ".cfg"}
 CODE = ["cbba_sota", "scripts", "tests", "pyproject.toml"]
 RESULTS = ["test", "val-c1", "ctas", "alns-v2", "phase1b", "trackD-week1"]
