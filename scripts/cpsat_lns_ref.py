@@ -19,14 +19,14 @@ import os
 import time
 from concurrent.futures import as_completed
 
-from cbba_sota.bench import configs, runtime
+from mrta_search.bench import configs, runtime
 
 THREAD_VARS = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMBA_NUM_THREADS")
 
 
 def _job(name: str, split: str, i: int, budget: float, workers: int, sub_time: float) -> dict:
-    from cbba_sota.hetero import Instance, evaluate, replay
-    from cbba_sota.solvers import cpsat, greedy
+    from mrta_search.hetero import Instance, evaluate, replay
+    from mrta_search.solvers import cpsat, greedy
 
     inst = Instance.from_pickle(configs.get(name).instance_path(split, i))
     inst.tt, inst.da  # noqa: B018  (loading, outside the budget)

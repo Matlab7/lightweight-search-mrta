@@ -26,14 +26,14 @@ from pathlib import Path
 
 import numpy as np
 
-from cbba_sota.bench import runtime
+from mrta_search.bench import runtime
 
 THREAD_VARS = ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMBA_NUM_THREADS")
 
 
 def instances_from_json(path: str | Path) -> dict:
     """Instances of the red-team JSON export ({name: {req, loc, dur, ab, dep}}); species = distinct (traits, depot)."""
-    from cbba_sota.hetero import Instance
+    from mrta_search.hetero import Instance
 
     out = {}
     for name, d in json.loads(Path(path).read_text()).items():
@@ -48,7 +48,7 @@ def instances_from_json(path: str | Path) -> dict:
 
 
 def parse_overrides(items: list[str]) -> dict:
-    from cbba_sota.solvers.alns import ALNSConfig
+    from mrta_search.solvers.alns import ALNSConfig
 
     fields = {f.name: f for f in dataclasses.fields(ALNSConfig)} | {"preset": None}
     out = {}
@@ -74,14 +74,14 @@ def budget(setting, spec: str) -> float:
 
 def _warm() -> None:
     """Pool initializer: load the numba kernels before any budget starts."""
-    from cbba_sota.solvers.alns import _warmup
+    from mrta_search.solvers.alns import _warmup
 
     _warmup()
 
 
 def _job(key: dict, inst, time_limit: float, seed: int, workers: int, overrides: dict) -> dict:
-    from cbba_sota.hetero import evaluate, replay
-    from cbba_sota.solvers.alns import ALNSConfig, solve
+    from mrta_search.hetero import evaluate, replay
+    from mrta_search.solvers.alns import ALNSConfig, solve
 
     fields = dict(overrides)
     base = ALNSConfig.v1() if fields.pop("preset", "v2") == "v1" else ALNSConfig()  # preset="v1": Phase 1 ALNS
@@ -123,8 +123,8 @@ def main() -> None:
     for var in THREAD_VARS:
         os.environ[var] = "1"
 
-    from cbba_sota.bench import configs
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench import configs
+    from mrta_search.hetero import Instance
 
     overrides = parse_overrides(args.overrides)
     tag = args.tag or f"t{args.time}-w{args.workers}-s{args.seed}"

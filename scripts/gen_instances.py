@@ -11,8 +11,8 @@ from __future__ import annotations
 import argparse
 import multiprocessing as mp
 
-from cbba_sota.bench import configs
-from cbba_sota.bench.heteromrta import generate_env, load_env, save_env, slim
+from mrta_search.bench import configs
+from mrta_search.bench.heteromrta import generate_env, load_env, save_env, slim
 
 
 def _job(args: tuple[str, str, int, bool]) -> str:
@@ -31,8 +31,8 @@ def _job(args: tuple[str, str, int, bool]) -> str:
 
 def _fingerprint(args: tuple[str, str, int]) -> tuple[str, str, int, str, bool]:
     """(setting, split, index, fingerprint of the file, whether it equals a fresh generation from its seed)."""
-    from cbba_sota.bench import runtime
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench import runtime
+    from mrta_search.hetero import Instance
 
     name, split, i = args
     setting = configs.get(name)

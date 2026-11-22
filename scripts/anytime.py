@@ -25,7 +25,7 @@ paper's RL(s.10) time of the setting):
 - CPFULL: the monolithic CP-SAT model (``cpsat.solve_full``, CP-SAT's own portfolio of search and LNS workers) on 1
   or 8 threads, hinted with the best of 1 or 8 forked ``greedy.construct`` restart streams built in min(10% of the
   budget, 3 s); arcs to the ``bks.cpfull_knn`` nearest candidate tasks only on large instances (the dev choice).
-- CTAS: CTAS-D, the benchmark paper's exact MILP (``cbba_sota.solvers.ctas``, verified against its shipped Gurobi
+- CTAS: CTAS-D, the benchmark paper's exact MILP (``mrta_search.solvers.ctas``, verified against its shipped Gurobi
   runs), solved by CP-SAT as a MIP backend on 1 or 8 threads within the budget (model building included), no warm
   start. A budget without a converted plan is a failure (makespan 200).
 Rows of the multi-process methods (ALNS2/ALNS1 with 8 workers, PCPSAT, CPFULL, RL, CONSTRUCT) record the CPU
@@ -91,9 +91,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bks
 import compare_dev as cd
 
-from cbba_sota.bench import configs, runtime
-from cbba_sota.bench.configs import RUNS_DIR
-from cbba_sota.hetero.replay import succeeded
+from mrta_search.bench import configs, runtime
+from mrta_search.bench.configs import RUNS_DIR
+from mrta_search.hetero.replay import succeeded
 
 OUT = RUNS_DIR / "anytime"
 SPLIT = "val"
@@ -174,7 +174,7 @@ def stream_budget(setting) -> float:
 
 
 def run_alns(name: str, split: str, i: int, workers: int, budget: float, preset: str) -> dict:
-    from cbba_sota.solvers import alns
+    from mrta_search.solvers import alns
 
     inst, _, fp = cd._load(name, split, i)
     cfg = alns.ALNSConfig.v1() if preset == "ALNS1" else alns.ALNSConfig()
@@ -188,8 +188,8 @@ def run_alns(name: str, split: str, i: int, workers: int, budget: float, preset:
 
 
 def run_cpsat(name: str, split: str, i: int, budget: float, workers: int) -> dict:
-    from cbba_sota.hetero import evaluate
-    from cbba_sota.solvers import cpsat, greedy
+    from mrta_search.hetero import evaluate
+    from mrta_search.solvers import cpsat, greedy
 
     inst, _, fp = cd._load(name, split, i)
     t0, c0 = time.perf_counter(), time.process_time()
@@ -202,7 +202,7 @@ def run_cpsat(name: str, split: str, i: int, budget: float, workers: int) -> dic
 
 
 def run_pcpsat(name: str, split: str, i: int, budget: float, workers: int, sub_time: float | None = None) -> dict:
-    from cbba_sota.solvers import cpsat
+    from mrta_search.solvers import cpsat
 
     inst, _, fp = cd._load(name, split, i)
     sub_time = bks.pcpsat_sub_time(name) if sub_time is None else sub_time
@@ -215,8 +215,8 @@ def run_pcpsat(name: str, split: str, i: int, budget: float, workers: int, sub_t
 
 
 def run_cpfull(name: str, split: str, i: int, budget: float, workers: int, knn: int | None = None) -> dict:
-    from cbba_sota.hetero import evaluate
-    from cbba_sota.solvers import cpsat
+    from mrta_search.hetero import evaluate
+    from mrta_search.solvers import cpsat
 
     inst, _, fp = cd._load(name, split, i)
     knn = bks.cpfull_knn(name) if knn is None else knn
@@ -230,7 +230,7 @@ def run_cpfull(name: str, split: str, i: int, budget: float, workers: int, knn: 
 
 
 def run_ctas(name: str, split: str, i: int, budget: float, workers: int) -> dict:
-    from cbba_sota.solvers import ctas
+    from mrta_search.solvers import ctas
 
     inst, _, fp = cd._load(name, split, i)
     t0 = time.perf_counter()
@@ -247,8 +247,8 @@ def run_ctas(name: str, split: str, i: int, budget: float, workers: int) -> dict
 def run_stream(name: str, split: str, i: int, seed: int, checkpoints: list[float]) -> dict:
     """One restart stream of ``greedy.construct`` (same plan sequence for ``seed``) until the last checkpoint.
     Returns, per checkpoint, the best plan finished by then (or the first plan) with its env replay."""
-    from cbba_sota.hetero import evaluate, replay
-    from cbba_sota.solvers import greedy
+    from mrta_search.hetero import evaluate, replay
+    from mrta_search.solvers import greedy
 
     inst, _, fp = cd._load(name, split, i)
     rng = np.random.default_rng(seed)
@@ -579,7 +579,7 @@ def _fmt(g: dict | None) -> str:
 
 
 def report(args) -> None:
-    from cbba_sota.stats import holm
+    from mrta_search.stats import holm
 
     bks_all = bks.load_bks(SPLIT)
     gaps, rats, curves = [], [], []

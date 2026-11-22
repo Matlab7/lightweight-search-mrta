@@ -1,4 +1,4 @@
-"""Checks of the CTAS-D port (``cbba_sota.solvers.ctas``) on the shipped RALTestSet (non-blind) and on one generated
+"""Checks of the CTAS-D port (``mrta_search.solvers.ctas``) on the shipped RALTestSet (non-blind) and on one generated
 50-task instance. Writes the report (default docs/results/ctas/ralt_check.txt) and the per-run rows, routes
 included, next to it (.json).
 
@@ -38,10 +38,10 @@ from pathlib import Path
 import numpy as np
 import ortools
 
-from cbba_sota.bench import configs, runtime
-from cbba_sota.bench.configs import HETEROMRTA_DIR, MAX_TIME, ROOT, RUNS_DIR
-from cbba_sota.hetero import Instance, make_env, replay, replay_routes
-from cbba_sota.solvers import ctas
+from mrta_search.bench import configs, runtime
+from mrta_search.bench.configs import HETEROMRTA_DIR, MAX_TIME, ROOT, RUNS_DIR
+from mrta_search.hetero import Instance, make_env, replay, replay_routes
+from mrta_search.solvers import ctas
 
 RAL = HETEROMRTA_DIR / "RALTestSet"
 ALNS = [RUNS_DIR / "alns" / f"final-ral-{s}" / "RALTestSet-test.jsonl" for s in ("4s", "30s")]
@@ -315,7 +315,7 @@ def main() -> None:
     ral = [r for r in runs if r["i"] != "large"]
     big = [r for r in runs if r["i"] == "large"]
 
-    lines = [(f"CTAS-D port check (cbba_sota.solvers.ctas); started {started}, finished {_now()}; code "
+    lines = [(f"CTAS-D port check (mrta_search.solvers.ctas); started {started}, finished {_now()}; code "
               f"{runtime.code_version()}; OR-Tools {ortools.__version__}; host {runs[0]['host']}; command: "
               f"{' '.join(sys.argv)}"),
              (f"jobs: {args.jobs} at a time, pinned to CPUs {sorted({r['affinity'] for r in runs})}; load1 at job "

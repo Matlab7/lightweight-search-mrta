@@ -55,9 +55,9 @@ from pathlib import Path
 
 import numpy as np
 
-from cbba_sota.bench import runtime
-from cbba_sota.bench.configs import MAX_TIME
-from cbba_sota.hetero.replay import succeeded
+from mrta_search.bench import runtime
+from mrta_search.bench.configs import MAX_TIME
+from mrta_search.hetero.replay import succeeded
 
 SETTINGS = ("SA-BT-25-5-50", "SA-BT-50-5-50", "SA-AT-50-5-50", "MA-AT-25-5-50", "MA-AT-50-5-50", "MA-AT-50-5-200",
             "MA-AT-150-10-500", "MA-AT-150-5-500")  # the 8 H1 settings of the prereg
@@ -89,10 +89,10 @@ def _init(cpus: list[int]) -> None:
 
     import torch
 
-    from cbba_sota.hetero import Instance, evaluate
-    from cbba_sota.solvers import alns, greedy, rl
+    from mrta_search.hetero import Instance, evaluate
+    from mrta_search.solvers import alns, greedy, rl
 
-    importlib.import_module("cbba_sota.solvers.cpsat")  # import cost outside the budgets
+    importlib.import_module("mrta_search.solvers.cpsat")  # import cost outside the budgets
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
     _net = rl.load_policy("cpu")
@@ -112,8 +112,8 @@ def _pid() -> tuple[int, str]:
 def _load(name: str, split: str, i: int):
     """(instance with its travel matrices, env pickle bytes, fingerprint), cached per process; loading is outside
     every budget."""
-    from cbba_sota.bench import configs
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench import configs
+    from mrta_search.hetero import Instance
 
     path = configs.get(name).instance_path(split, i)
     inst = Instance.from_pickle(path)
@@ -127,7 +127,7 @@ def _children_cpu() -> float:
 
 
 def _plan_row(inst, plan, wall: float, cpu: float) -> dict:
-    from cbba_sota.hetero import evaluate, replay
+    from mrta_search.hetero import evaluate, replay
 
     rep = replay(inst, plan)
     return {"makespan": rep["makespan"], "success": rep["success"], "env_finished": rep["env_finished"],
@@ -139,7 +139,7 @@ def run_alns(name: str, split: str, i: int, workers: int, deadline: float | None
              init=None) -> dict:
     """ALNS until ``deadline`` (monotonic) or for ``budget`` seconds; ``init``: warm-start plan. A deadline is
     moved by the time this process spends loading the instance (outside every budget)."""
-    from cbba_sota.solvers import alns
+    from mrta_search.solvers import alns
 
     loading = time.monotonic()
     inst, _, fp = _load(name, split, i)
@@ -156,8 +156,8 @@ def run_alns(name: str, split: str, i: int, workers: int, deadline: float | None
 
 
 def run_cpsat(name: str, split: str, i: int, budget: float, workers: int) -> dict:
-    from cbba_sota.hetero import evaluate
-    from cbba_sota.solvers import cpsat, greedy
+    from mrta_search.hetero import evaluate
+    from mrta_search.solvers import cpsat, greedy
 
     inst, _, fp = _load(name, split, i)
     t0, c0 = time.perf_counter(), time.process_time()
@@ -170,7 +170,7 @@ def run_cpsat(name: str, split: str, i: int, budget: float, workers: int) -> dic
 
 
 def run_construct(name: str, split: str, i: int, budget: float) -> dict:
-    from cbba_sota.solvers import greedy
+    from mrta_search.solvers import greedy
 
     inst, _, fp = _load(name, split, i)
     t0, c0 = time.perf_counter(), time.process_time()
@@ -185,8 +185,8 @@ def run_rl(name: str, split: str, i: int, index: int, stride: int, budget: float
     the best rollout (with coalitions) and timing."""
     from dataclasses import asdict
 
-    from cbba_sota.bench import configs
-    from cbba_sota.solvers import rl
+    from mrta_search.bench import configs
+    from mrta_search.solvers import rl
 
     _, data, fp = _load(name, split, i)
     seed = configs.get(name).seed(split, i)
@@ -204,14 +204,14 @@ def run_rl(name: str, split: str, i: int, index: int, stride: int, budget: float
 
 
 def run_replay(name: str, split: str, i: int, routes) -> tuple[float, bool]:
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     return rl.replay(_load(name, split, i)[1], routes)
 
 
 def run_greedy(name: str, split: str, i: int) -> dict:
-    from cbba_sota.bench import configs
-    from cbba_sota.solvers import greedy
+    from mrta_search.bench import configs
+    from mrta_search.solvers import greedy
 
     c0 = time.process_time()
     res = greedy.greedy_nearest(configs.get(name).instance_path(split, i))
@@ -226,7 +226,7 @@ def run_greedy(name: str, split: str, i: int) -> dict:
 def _rl_row(parts: list[dict]):
     """Row fields of RL sample blocks that ran concurrently (wall = the longest block, CPU = sum) and the best
     rollout, whose own env run is the RL score."""
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     if len({p["fingerprint"] for p in parts}) > 1:
         raise RuntimeError("RL blocks ran on different instances")
@@ -258,7 +258,7 @@ def _run_job(ex: ProcessPoolExecutor, job: dict) -> dict:
         parts = [f.result() for f in [ex.submit(run_rl, name, split, i, p, n, budget) for p in range(n)]]
         return _with_replay(ex, _rl_row(parts)[0], name, split, i)
     if method == HYBRID:  # the budget starts when the first RL block has loaded the instance
-        from cbba_sota.solvers import rl
+        from mrta_search.solvers import rl
 
         parts = [f.result() for f in [ex.submit(run_rl, name, split, i, p, LANE, samples=8) for p in range(LANE)]]
         rl_row, best = _rl_row(parts)
@@ -320,7 +320,7 @@ class Lane(threading.Thread):
 def _units(settings: list[str], n: int, done: set[tuple], rng: random.Random, scale: float,
            split: str = "dev") -> list[list[dict]]:
     """8-core jobs alone, 1-core jobs bundled by (setting, budget); longest first, ties shuffled."""
-    from cbba_sota.bench import configs
+    from mrta_search.bench import configs
 
     singles, bundles = [], []
     for name in settings:
@@ -396,7 +396,7 @@ def run(args) -> None:
 def _load_rows(out: Path) -> dict[tuple[str, str], dict[str, dict[int, dict]]]:
     """(setting, budget label) -> method -> instance -> row (budget-free greedy rows are copied to every budget).
     Only rows computed on the current instances (matching fingerprint) enter."""
-    from cbba_sota.bench import configs
+    from mrta_search.bench import configs
 
     rows: dict[tuple[str, str], dict[str, dict[int, dict]]] = {}
     for path in sorted(out.glob("*.jsonl")):
@@ -466,7 +466,7 @@ def _method_table(name: str, label: str, budget: float, by_method: dict[str, dic
 
 
 def report(args) -> None:
-    from cbba_sota.stats import holm
+    from mrta_search.stats import holm
 
     data = _load_rows(args.out)
     covered = [s for s in SETTINGS if any(name == s for name, _ in data)]
@@ -519,7 +519,7 @@ def report(args) -> None:
 
 
 def main() -> None:
-    from cbba_sota.bench import configs
+    from mrta_search.bench import configs
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["run", "report"])

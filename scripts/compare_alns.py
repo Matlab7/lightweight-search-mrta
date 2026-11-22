@@ -9,7 +9,7 @@ import sys
 
 import numpy as np
 
-from cbba_sota.bench.configs import RUNS_DIR
+from mrta_search.bench.configs import RUNS_DIR
 
 
 def load(tag: str) -> dict[str, dict[str, dict]]:

@@ -12,13 +12,13 @@ from dataclasses import replace
 import numpy as np
 import pytest
 
-from cbba_sota.bench.configs import ROOT, get
-from cbba_sota.dyn import perturb
-from cbba_sota.dyn.controller import PlanController
-from cbba_sota.dyn.env import code_hash, make_env
-from cbba_sota.dyn.executor import Executor, Realization
-from cbba_sota.dyn.methods import PLANNERS, make_policy
-from cbba_sota.hetero import Instance
+from mrta_search.bench.configs import ROOT, get
+from mrta_search.dyn import perturb
+from mrta_search.dyn.controller import PlanController
+from mrta_search.dyn.env import code_hash, make_env
+from mrta_search.dyn.executor import Executor, Realization
+from mrta_search.dyn.methods import PLANNERS, make_policy
+from mrta_search.hetero import Instance
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import trackD_k0 as K
@@ -251,8 +251,8 @@ def test_runner_planners_env_and_executor(method):
 def test_runner_rl_static_equals_plain_rollout():
     """Check (iv) through the runner: RL(g.) in DynTaskEnvX on the static cell == ``rl.rollout`` on the plain env
     with the runner's method seed."""
-    from cbba_sota.bench.heteromrta import load_env
-    from cbba_sota.solvers import rl
+    from mrta_search.bench.heteromrta import load_env
+    from mrta_search.solvers import rl
 
     row = _case("RL(g.)", "static", tier="native")
     assert row["status"] == "completed" and row["world"].startswith("DynTaskEnvX[decision,")

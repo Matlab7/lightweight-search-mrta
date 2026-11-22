@@ -18,9 +18,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import contextlib
 import io
 
-from cbba_sota.bench import configs
-from cbba_sota.hetero import load_instance
-from cbba_sota.hetero.replay import make_env
+from mrta_search.bench import configs
+from mrta_search.hetero import load_instance
+from mrta_search.hetero.replay import make_env
 import anytime  # noqa: E402  (scripts/: the harness's definition of a disturbed row)
 
 CASES = [  # (id, setting, split, instance, title)

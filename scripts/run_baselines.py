@@ -35,7 +35,7 @@ from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
 from pathlib import Path
 from typing import NamedTuple
 
-from cbba_sota.bench import runtime
+from mrta_search.bench import runtime
 
 _ONE = {k: "1" for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMBA_NUM_THREADS")}
 GREEDY = ("greedy", "greedy_repo")
@@ -75,9 +75,9 @@ def _run(job: Job) -> dict:
 
 
 def _solve(job: Job) -> dict:
-    from cbba_sota.bench import configs
-    from cbba_sota.hetero import Instance, evaluate, replay, replay_routes
-    from cbba_sota.solvers import cpsat, greedy
+    from mrta_search.bench import configs
+    from mrta_search.hetero import Instance, evaluate, replay, replay_routes
+    from mrta_search.solvers import cpsat, greedy
 
     setting = configs.get(job.setting)
     path = setting.instance_path(job.split, job.instance)
@@ -147,7 +147,7 @@ def summarize(root: Path, settings: list[str], split: str, instances: int | None
               methods: list[str] | None = None, budgets: list[float] | None = None) -> None:
     import numpy as np
 
-    from cbba_sota.hetero.replay import succeeded
+    from mrta_search.hetero.replay import succeeded
 
     for name in settings:
         path = out_path(root, name, split)
@@ -175,7 +175,7 @@ def summarize(root: Path, settings: list[str], split: str, instances: int | None
 
 
 def main() -> None:
-    from cbba_sota.bench import configs
+    from mrta_search.bench import configs
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--settings", nargs="*", default=[s.name for s in configs.SETTINGS])

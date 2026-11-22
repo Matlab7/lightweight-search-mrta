@@ -134,8 +134,8 @@ def job(args):
     import torch
 
     torch.set_num_threads(1)
-    from cbba_sota.solvers import rl
     from dyn_env import Scenario, make_dyn_env
+    from cbba_sota.solvers import rl
 
     global _net
     if _net is None:

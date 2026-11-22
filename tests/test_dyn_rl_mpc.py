@@ -1,6 +1,6 @@
-"""B2 RL-MPC (``cbba_sota.dyn.baselines.rl_mpc``): nominal state clone, lockstep rollouts, rollout -> plan.
+"""B2 RL-MPC (``mrta_search.dyn.baselines.rl_mpc``): nominal state clone, lockstep rollouts, rollout -> plan.
 
-- Static reduction: a clone of the time-0 static state rolls out bit-identically to ``cbba_sota.solvers.rl.rollout``
+- Static reduction: a clone of the time-0 static state rolls out bit-identically to ``mrta_search.solvers.rl.rollout``
   (greedy and sampled), with the fast observation / update methods and with the native ones.
 - The fast methods equal the native ones on mid-episode clones taken at the structural events of release and
   failure episodes (bit-identical rollouts).
@@ -15,13 +15,13 @@ import numpy as np
 import pytest
 import torch
 
-from cbba_sota.bench.configs import get
-from cbba_sota.bench.heteromrta import load_env
-from cbba_sota.dyn import perturb
-from cbba_sota.dyn.baselines import rl_mpc
-from cbba_sota.dyn.env import make_env
-from cbba_sota.dyn.planner import PlanState
-from cbba_sota.solvers import rl
+from mrta_search.bench.configs import get
+from mrta_search.bench.heteromrta import load_env
+from mrta_search.dyn import perturb
+from mrta_search.dyn.baselines import rl_mpc
+from mrta_search.dyn.env import make_env
+from mrta_search.dyn.planner import PlanState
+from mrta_search.solvers import rl
 
 torch.set_num_threads(1)
 

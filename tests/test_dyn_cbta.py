@@ -1,4 +1,4 @@
-"""B6 coalition auctions (``cbba_sota.dyn.baselines.cbta``) and the B3 budget tiers (``cpsat_tiers``).
+"""B6 coalition auctions (``mrta_search.dyn.baselines.cbta``) and the B3 budget tiers (``cpsat_tiers``).
 
 - Every auction plan satisfies the plan contract (``planner.check_plan``: minimal covers, frozen commitments, key
   monotonicity, head locks) at every re-plan, and episodes complete in ``DynTaskEnvX`` under release and failures.
@@ -11,13 +11,13 @@
 import numpy as np
 import pytest
 
-from cbba_sota.bench.configs import get
-from cbba_sota.dyn import perturb
-from cbba_sota.dyn import rh_kernels as K
-from cbba_sota.dyn.baselines import cbta, cpsat_tiers
-from cbba_sota.dyn.env import make_env
-from cbba_sota.dyn.planner import PlanState, Problem, check_plan
-from cbba_sota.hetero import Instance
+from mrta_search.bench.configs import get
+from mrta_search.dyn import perturb
+from mrta_search.dyn import rh_kernels as K
+from mrta_search.dyn.baselines import cbta, cpsat_tiers
+from mrta_search.dyn.env import make_env
+from mrta_search.dyn.planner import PlanState, Problem, check_plan
+from mrta_search.hetero import Instance
 
 
 def _checked(policy):

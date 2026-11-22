@@ -16,20 +16,20 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from cbba_sota.bench import configs
-from cbba_sota.bench.configs import ROOT
-from cbba_sota.bench.heteromrta import TaskEnv, load_env
-from cbba_sota.dyn import perturb
-from cbba_sota.dyn.env import (
+from mrta_search.bench import configs
+from mrta_search.bench.configs import ROOT
+from mrta_search.bench.heteromrta import TaskEnv, load_env
+from mrta_search.dyn import perturb
+from mrta_search.dyn.env import (
     DynTaskEnvX,
     NearestPolicy,
     RLPolicy,
     make_env,
     predict_ready,
 )
-from cbba_sota.hetero import Instance, Plan, evaluate, random_plan
-from cbba_sota.hetero.replay import env_from_instance
-from cbba_sota.solvers import greedy, rl
+from mrta_search.hetero import Instance, Plan, evaluate, random_plan
+from mrta_search.hetero.replay import env_from_instance
+from mrta_search.solvers import greedy, rl
 
 PINNED = "4cf5e04"  # ALNS v2 commit pinned by the Track D spec (Section 8)
 STATIC_CASES = [("MA-AT-25-5-50", 0), ("MA-AT-25-5-50", 1), ("MA-AT-50-5-50", 0), ("SA-AT-50-5-50", 0),

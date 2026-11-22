@@ -5,7 +5,7 @@ For every case (setting, dev instance, CRN seed, cell, planner) the same planner
 
   env        ``DynTaskEnvX.run_plan`` with ``PlanController`` (the ground truth; D2 arrival-order coalitions)
   decision   the same with the env's decision-order coalition rule (check (ii): arrival == decision at ideal comms)
-  executor   ``cbba_sota.dyn.executor.Executor`` (the fast hand-written world K0 is about)
+  executor   ``mrta_search.dyn.executor.Executor`` (the fast hand-written world K0 is about)
 
 and the executor and decision-order trajectories are compared with the env's:
   - the re-plan sequence: times and planner seeds. A seed is ``hash(belief digest, event index)``, so equal seeds mean
@@ -160,13 +160,13 @@ def run_case(job: dict) -> dict:
 
 
 def _run_case(job: dict) -> dict:
-    from cbba_sota.bench.configs import get
-    from cbba_sota.dyn.controller import PlanController
-    from cbba_sota.dyn.env import make_env
-    from cbba_sota.dyn.executor import Executor, Realization
-    from cbba_sota.dyn.methods import make_policy
-    from cbba_sota.dyn.perturb import realize_instance
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench.configs import get
+    from mrta_search.dyn.controller import PlanController
+    from mrta_search.dyn.env import make_env
+    from mrta_search.dyn.executor import Executor, Realization
+    from mrta_search.dyn.methods import make_policy
+    from mrta_search.dyn.perturb import realize_instance
+    from mrta_search.hetero import Instance
 
     st = get(job["setting"])
     rz = realize_instance(job["setting"], "dev", job["instance"], job["seed"], job["cell"])
@@ -234,12 +234,12 @@ def _git() -> dict:
     def git(*a):
         return subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True, check=False).stdout.strip()
 
-    from cbba_sota.dyn import executor
+    from mrta_search.dyn import executor
 
-    dyn = ROOT / "src" / "cbba_sota" / "dyn"
+    dyn = ROOT / "src" / "mrta_search" / "dyn"
     ctl = hashlib.sha1((dyn / "controller.py").read_bytes()).hexdigest()[:10]
     return {"git": git("rev-parse", "--short=12", "HEAD"),
-            "git_dirty_dyn": bool(git("status", "--porcelain", "--", "src/cbba_sota/dyn")),
+            "git_dirty_dyn": bool(git("status", "--porcelain", "--", "src/mrta_search/dyn")),
             "executor_hash": executor.code_hash(), "controller_hash": ctl}
 
 
@@ -248,7 +248,7 @@ def _key(r: dict) -> tuple:
 
 
 def cmd_run(a) -> None:
-    from cbba_sota.dyn.env import code_hash
+    from mrta_search.dyn.env import code_hash
 
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -295,7 +295,7 @@ def _range(spec: list[str]) -> list[int]:
 def cmd_summary(a) -> None:
     import numpy as np
 
-    from cbba_sota.dyn.env import code_hash
+    from mrta_search.dyn.env import code_hash
 
     chash = code_hash()
     prov = _git()
@@ -369,7 +369,7 @@ def _rl_net():
     if _NET is None:
         import torch
 
-        from cbba_sota.solvers import rl
+        from mrta_search.solvers import rl
 
         torch.set_num_threads(1)
         _NET = rl.load_policy("cpu")
@@ -379,10 +379,10 @@ def _rl_net():
 def rl_job(job: dict) -> dict:
     """One check (iv) job: see the module docstring."""
     _threads()
-    from cbba_sota.bench.configs import get
-    from cbba_sota.bench.heteromrta import load_env
-    from cbba_sota.dyn.env import RLPolicy, make_env
-    from cbba_sota.solvers import rl
+    from mrta_search.bench.configs import get
+    from mrta_search.bench.heteromrta import load_env
+    from mrta_search.dyn.env import RLPolicy, make_env
+    from mrta_search.solvers import rl
 
     st = get(job["setting"])
     path = st.instance_path("dev", job["instance"])
@@ -420,8 +420,8 @@ def rl_job(job: dict) -> dict:
 
 
 def cmd_rl(a) -> None:
-    from cbba_sota.dyn.env import code_hash
-    from cbba_sota.dyn.perturb import PRIMARY_SETTINGS
+    from mrta_search.dyn.env import code_hash
+    from mrta_search.dyn.perturb import PRIMARY_SETTINGS
 
     jobs, stored = [], {}
     for s in PRIMARY_SETTINGS:
@@ -463,8 +463,8 @@ def cmd_rl(a) -> None:
 
 
 def main(argv=None) -> None:
-    from cbba_sota.dyn.methods import PLANNERS
-    from cbba_sota.dyn.perturb import PRIMARY_SETTINGS
+    from mrta_search.dyn.methods import PLANNERS
+    from mrta_search.dyn.perturb import PRIMARY_SETTINGS
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=("run", "summary", "rl"))

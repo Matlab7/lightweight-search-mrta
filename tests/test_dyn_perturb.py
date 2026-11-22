@@ -5,10 +5,10 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from cbba_sota.bench import configs
-from cbba_sota.dyn import perturb
-from cbba_sota.dyn.env import make_env
-from cbba_sota.dyn.perturb import N1, N3, N4, TICK, DelayModel, crn_rng, delay_calendar
+from mrta_search.bench import configs
+from mrta_search.dyn import perturb
+from mrta_search.dyn.env import make_env
+from mrta_search.dyn.perturb import N1, N3, N4, TICK, DelayModel, crn_rng, delay_calendar
 
 PAPER_H = {"MA-AT-25-5-50": 25.079, "MA-AT-50-5-50": 14.812, "SA-AT-50-5-50": 19.7135, "SA-BT-50-5-50": 12.1165}
 

@@ -79,7 +79,7 @@ def gm_of(rows, arm, cell, rho, keys=None):
 
 def ratio_ci(rows, a, cell_a, rho_a, b, cell_b, rho_b, reps=10000, seed=0):
     """GM ratio a/b over instances (seeds averaged in log), cluster bootstrap 95% CI (strata = settings)."""
-    from cbba_sota.dyn.stats import gm_ratio
+    from mrta_search.dyn.stats import gm_ratio
 
     da = cluster_log_means(rows, a, cell_a, rho_a)
     db = cluster_log_means(rows, b, cell_b, rho_b)
@@ -224,7 +224,7 @@ def cmd_tune(args) -> None:
 # ------------------------------------------------------------------------------------------------ gates
 def conclusions(rows, full_rows, verbose=False, reps=10000):
     """K5 / K6 / variant / DS / secondary on one set of arm rows (one lease per arm and rho) plus FULL rows."""
-    from cbba_sota.dyn.stats import max_regret_test
+    from mrta_search.dyn.stats import max_regret_test
 
     cells = cells_of(rows)
     arms_present = sorted({r["arm"] for r in rows})
@@ -478,7 +478,7 @@ def cmd_tables(args) -> None:
 def cmd_paired(args) -> None:
     """Secondary factors: GM ratio of rows A over base rows B, paired on (setting, inst, seed, cell, arm, rho) (or
     against FULL with --vs-full), grouped by arm x cell x rho; cluster bootstrap over instances."""
-    from cbba_sota.dyn.stats import gm_ratio
+    from mrta_search.dyn.stats import gm_ratio
 
     A = dedup(load(args.rows))
     B = dedup(load(args.base))

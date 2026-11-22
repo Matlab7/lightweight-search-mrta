@@ -2,7 +2,7 @@
 
 Methods (agent B, spec 5.2 and references):
   SPARC-L        SPARC, 300 ALNS iterations per structural event (spec key monotonicity)
-  SPARC-L-rk     the same with relaxed keys (committed order + head-first; see cbba_sota/dyn/planner.py)
+  SPARC-L-rk     the same with relaxed keys (committed order + head-first; see mrta_search/dyn/planner.py)
   SPARC-H        SPARC, 3000 iterations
   ins-only       insertion floor only (T1b)
   every-L        every-event RH (R-b), 300 iterations, also re-plans at task finishes
@@ -42,11 +42,11 @@ def _threads() -> None:
 
 
 def make_policy(method: str, args: dict):
-    from cbba_sota.dyn.baselines.constructor_rh import ConstructorRH
-    from cbba_sota.dyn.baselines.cpsat_rh import CPSATRH, CPSATConfig
-    from cbba_sota.dyn.baselines.ditags import DITAGS
-    from cbba_sota.dyn.planner import SearchConfig
-    from cbba_sota.dyn.sparc import SPARC, SPARCConfig, every_event_rh, insertion_only
+    from mrta_search.dyn.baselines.constructor_rh import ConstructorRH
+    from mrta_search.dyn.baselines.cpsat_rh import CPSATRH, CPSATConfig
+    from mrta_search.dyn.baselines.ditags import DITAGS
+    from mrta_search.dyn.planner import SearchConfig
+    from mrta_search.dyn.sparc import SPARC, SPARCConfig, every_event_rh, insertion_only
 
     return {
         "SPARC-L": lambda: SPARC(SPARCConfig(iters=300)),
@@ -74,10 +74,10 @@ def _run_job(job: dict) -> dict:
     _threads()
     import numpy as np
 
-    from cbba_sota.bench.configs import get
-    from cbba_sota.dyn.controller import run_env
-    from cbba_sota.dyn.perturb import realize
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench.configs import get
+    from mrta_search.dyn.controller import run_env
+    from mrta_search.dyn.perturb import realize
+    from mrta_search.hetero import Instance
 
     st = get(job["setting"])
     inst = Instance.from_pickle(st.instance_path("dev", job["inst"]))
@@ -88,7 +88,7 @@ def _run_job(job: dict) -> dict:
     pol = make_policy(job["method"], job)
     violations: list[str] = []
     if job.get("check"):
-        from cbba_sota.dyn.planner import check_plan
+        from mrta_search.dyn.planner import check_plan
 
         orig = pol.replan
         relaxed = job["method"].endswith("-rk")
@@ -116,7 +116,7 @@ def _run_job(job: dict) -> dict:
 def _code() -> str:
     head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True,
                           check=False).stdout
-    return f"HEAD {head.strip()} + uncommitted cbba_sota/dyn (agent B day 1)"
+    return f"HEAD {head.strip()} + uncommitted mrta_search/dyn (agent B day 1)"
 
 
 def cmd_run(a) -> None:
@@ -203,13 +203,13 @@ def calib_job(job: dict) -> dict:
     _threads()
     import numpy as np
 
-    from cbba_sota.bench.configs import get
-    from cbba_sota.dyn.controller import PlanController
-    from cbba_sota.dyn.env import make_env
-    from cbba_sota.dyn.perturb import realize
-    from cbba_sota.dyn.planner import RHPlanner
-    from cbba_sota.dyn.sparc import SPARC, SPARCConfig
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench.configs import get
+    from mrta_search.dyn.controller import PlanController
+    from mrta_search.dyn.env import make_env
+    from mrta_search.dyn.perturb import realize
+    from mrta_search.dyn.planner import RHPlanner
+    from mrta_search.dyn.sparc import SPARC, SPARCConfig
+    from mrta_search.hetero import Instance
 
     st = get(job["setting"])
     inst = Instance.from_pickle(st.instance_path("dev", job["inst"]))

@@ -8,16 +8,16 @@ runs are deterministic, and SPARC's static run in the env equals its plan and th
 import numpy as np
 import pytest
 
-from cbba_sota.bench.configs import get
-from cbba_sota.dyn.baselines.constructor_rh import ConstructorRH
-from cbba_sota.dyn.baselines.cpsat_rh import CPSATRH, CPSATConfig
-from cbba_sota.dyn.baselines.ditags import DITAGS, event_region
-from cbba_sota.dyn.controller import run_env
-from cbba_sota.dyn.executor import Executor, Realization
-from cbba_sota.dyn.perturb import realize
-from cbba_sota.dyn.planner import PlanState, RHPlanner, SearchConfig, check_plan
-from cbba_sota.dyn.sparc import SPARC, SPARCConfig, every_event_rh, insertion_only
-from cbba_sota.hetero import Instance, Plan, replay
+from mrta_search.bench.configs import get
+from mrta_search.dyn.baselines.constructor_rh import ConstructorRH
+from mrta_search.dyn.baselines.cpsat_rh import CPSATRH, CPSATConfig
+from mrta_search.dyn.baselines.ditags import DITAGS, event_region
+from mrta_search.dyn.controller import run_env
+from mrta_search.dyn.executor import Executor, Realization
+from mrta_search.dyn.perturb import realize
+from mrta_search.dyn.planner import PlanState, RHPlanner, SearchConfig, check_plan
+from mrta_search.dyn.sparc import SPARC, SPARCConfig, every_event_rh, insertion_only
+from mrta_search.hetero import Instance, Plan, replay
 
 SETTING = "MA-AT-25-5-50"
 

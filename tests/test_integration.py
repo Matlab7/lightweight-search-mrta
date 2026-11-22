@@ -7,12 +7,12 @@ import time
 import numpy as np
 import pytest
 
-from cbba_sota.bench import configs
-from cbba_sota.bench.configs import ROOT, Setting
-from cbba_sota.bench.heteromrta import generate_env, save_env
-from cbba_sota.hetero import Instance, evaluate, replay
-from cbba_sota.solvers import rl
-from cbba_sota.solvers.alns import solve
+from mrta_search.bench import configs
+from mrta_search.bench.configs import ROOT, Setting
+from mrta_search.bench.heteromrta import generate_env, save_env
+from mrta_search.hetero import Instance, evaluate, replay
+from mrta_search.solvers import rl
+from mrta_search.solvers.alns import solve
 
 
 @pytest.fixture(scope="module")

@@ -1,6 +1,6 @@
 import numpy as np
 
-from cbba_sota.stats import holm, paired, tost
+from mrta_search.stats import holm, paired, tost
 
 
 def test_paired_detects_shift():

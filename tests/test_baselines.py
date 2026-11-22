@@ -5,10 +5,10 @@ import io
 import numpy as np
 import pytest
 
-from cbba_sota.bench.configs import HETEROMRTA_DIR, Setting
-from cbba_sota.bench.heteromrta import generate_env, save_env
-from cbba_sota.hetero import Instance, Plan, evaluate, make_env, random_plan, replay
-from cbba_sota.solvers import cpsat, greedy
+from mrta_search.bench.configs import HETEROMRTA_DIR, Setting
+from mrta_search.bench.heteromrta import generate_env, save_env
+from mrta_search.hetero import Instance, Plan, evaluate, make_env, random_plan, replay
+from mrta_search.solvers import cpsat, greedy
 
 RAL = sorted(HETEROMRTA_DIR.glob("RALTestSet/env_*.pkl"), key=lambda p: int(p.stem.split("_")[1]))
 FAMILIES = [("SA-BT", 9, 3, 20, 3), ("SA-AT", 15, 5, 20, 5), ("MA-AT", 25, 5, 50, 5), ("MA-AT", 50, 5, 50, 5)]

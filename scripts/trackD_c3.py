@@ -1,6 +1,6 @@
 """Track D C3 map runner (spec Section 8 days 4-5, Section 9.4): protocol arms x connectivity x families on dev.
 
-Every episode runs in the ground-truth world ``cbba_sota.dyn.c3world.C3Env`` (``DynTaskEnvX`` + rally + per-replica
+Every episode runs in the ground-truth world ``mrta_search.dyn.c3world.C3Env`` (``DynTaskEnvX`` + rally + per-replica
 D7) with SPARC's planner (agent B's ``RHPlanner``, Light: 300 iterations) inside the T2 comm layer. Rows go to a
 resumable JSONL: a case is done when a row with the same case id (configuration + C3 code hash) exists.
 
@@ -92,7 +92,7 @@ def _init() -> None:
 
 def run_case(c: dict) -> dict:
     _init()
-    from cbba_sota.dyn.c3world import C3Config, c3_hash, run_c3
+    from mrta_search.dyn.c3world import C3Config, c3_hash, run_c3
 
     cfg = C3Config(arm=c["arm"], rho=c["rho"] if math.isfinite(c["rho"]) else 1.0, lease_g=c["lease_g"] or 1.0,
                    lease_L=c["lease_L"] or 30.0, iters=c["iters"], frozen_model=c["frozen_model"], keys=c["keys"],
@@ -125,7 +125,7 @@ def cmd_run(args) -> None:
     import multiprocessing as mp
 
     _init()
-    from cbba_sota.dyn.c3world import c3_hash
+    from mrta_search.dyn.c3world import c3_hash
 
     h = c3_hash()
     out = Path(args.out)

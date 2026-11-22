@@ -6,8 +6,8 @@ import numpy as np
 import pytest
 import torch
 
-from cbba_sota.bench import SETTINGS, configs, get
-from cbba_sota.bench.heteromrta import (
+from mrta_search.bench import SETTINGS, configs, get
+from mrta_search.bench.heteromrta import (
     TaskEnv,
     dumps_env,
     generate_env,
@@ -77,7 +77,7 @@ def test_loads_shipped_main_pickle():
 @pytest.fixture(scope="module")
 def net():
     torch.set_num_threads(1)
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     return rl.load_policy()
 
@@ -86,7 +86,7 @@ def net():
 def test_rollout_matches_official_worker(net, sample):
     from worker import Worker
 
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     worker = Worker(0, net, net, 0, torch.device("cpu"))
     s = get("MA-AT-9-3-20")
@@ -105,7 +105,7 @@ def test_rollout_matches_official_worker(net, sample):
 
 
 def test_lockstep_and_blocks(net):
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     data = (SHIPPED / "env_5.pkl").read_bytes()
     seeds = [rl.sample_seed(5, k) for k in range(4)]
@@ -120,7 +120,7 @@ def test_lockstep_and_blocks(net):
 
 
 def test_best_of_prefers_success():
-    from cbba_sota.solvers.rl import Result, best_of
+    from mrta_search.solvers.rl import Result, best_of
 
     fail, ok = Result(200.1, False, 0.9, 0.0, []), Result(180.0, True, 1.0, 0.0, [])
     assert best_of([fail, ok]) is ok and best_of([fail]) is fail

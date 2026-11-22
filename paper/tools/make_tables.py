@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 import anytime as at  # noqa: E402  (the harness's budgets and its definition of a disturbed row)
-from cbba_sota.bench import configs
+from mrta_search.bench import configs
 
 SETTINGS = ("SA-BT-25-5-50", "SA-BT-50-5-50", "SA-AT-50-5-50", "MA-AT-25-5-50", "MA-AT-50-5-50", "MA-AT-50-5-200",
             "MA-AT-150-10-500", "MA-AT-150-5-500")

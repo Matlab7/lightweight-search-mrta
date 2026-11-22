@@ -1,4 +1,4 @@
-"""Tests for the C3 world (``cbba_sota.dyn.c3world``): the env extension (rally, per-replica D7, tick-polled idle
+"""Tests for the C3 world (``mrta_search.dyn.c3world``): the env extension (rally, per-replica D7, tick-polled idle
 robots), rule 4.6(c), and end-to-end protocol episodes on the ground-truth env with the real planner (dev only)."""
 from __future__ import annotations
 
@@ -7,12 +7,12 @@ import math
 import numpy as np
 import pytest
 
-from cbba_sota.bench import configs
-from cbba_sota.dyn import perturb
-from cbba_sota.dyn.c3world import C3Config, C3Controller, C3Env, make_c3_env, run_c3
-from cbba_sota.dyn.comm import CRNKey
-from cbba_sota.dyn.env import make_env
-from cbba_sota.dyn.replica import (
+from mrta_search.bench import configs
+from mrta_search.dyn import perturb
+from mrta_search.dyn.c3world import C3Config, C3Controller, C3Env, make_c3_env, run_c3
+from mrta_search.dyn.comm import CRNKey
+from mrta_search.dyn.env import make_env
+from mrta_search.dyn.replica import (
     ABORT,
     FINISH,
     RELEASE,
@@ -39,8 +39,8 @@ def _path(setting, i):
 @pytest.mark.parametrize("cell", ["static", "F1-R2", "F3-pf0.2"])
 def test_c3env_without_controller_hooks_equals_dyntaskenvx(cell):
     """Unused, the extension changes nothing: SPARC's good-comms controller gives bit-identical episodes."""
-    from cbba_sota.dyn.controller import PlanController
-    from cbba_sota.dyn.methods import make_policy
+    from mrta_search.dyn.controller import PlanController
+    from mrta_search.dyn.methods import make_policy
 
     real = _real(SET, 1, cell)
     sigs = []
@@ -125,7 +125,7 @@ def test_overdue_work_of_a_silent_crew_counts_as_aborted():
 def test_lease_names_a_declared_failed_head_member_absent():
     """Rule 4.6(b) keeps a declared-failed robot on its committed head; the lease must still publish its absent
     record, otherwise planners keep sending robots to wait for it (livelock found in the dev pilot)."""
-    from cbba_sota.dyn.replica import TRAVEL, WAIT, LeaseConfig, lease_check
+    from mrta_search.dyn.replica import TRAVEL, WAIT, LeaseConfig, lease_check
 
     L = Layout(3, 2, 1)
     kb = KnowledgeBase(L)
@@ -167,9 +167,9 @@ def test_full_matches_the_good_comms_controller_closely():
     """FULL (C3 world, ideal comms) vs SPARC's good-comms controller in DynTaskEnvX on the same realizations: the
     same planner and triggers, planned at the next comm tick instead of the event instant (dev pilot over 24 pairs:
     GM 0.997); per episode the chaotic planner makes them differ, so only a loose bound is asserted."""
-    from cbba_sota.dyn.controller import run_env
-    from cbba_sota.dyn.methods import make_policy
-    from cbba_sota.hetero.instance import Instance
+    from mrta_search.dyn.controller import run_env
+    from mrta_search.dyn.methods import make_policy
+    from mrta_search.hetero.instance import Instance
 
     for i, cell in ((3, "F1-R2"), (3, "F3-pf0.2")):
         r = run_c3(SET, "dev", i, 0, cell, C3Config(arm="FULL"))

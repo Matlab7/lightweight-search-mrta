@@ -1,15 +1,15 @@
-"""Tests for the B1 online RL baseline (cbba_sota.dyn.baselines.rl_online)."""
+"""Tests for the B1 online RL baseline (mrta_search.dyn.baselines.rl_online)."""
 from __future__ import annotations
 
 import numpy as np
 import pytest
 import torch
 
-from cbba_sota.bench import configs
-from cbba_sota.bench.heteromrta import load_env
-from cbba_sota.dyn import perturb
-from cbba_sota.dyn.baselines import rl_online as B1
-from cbba_sota.solvers import rl
+from mrta_search.bench import configs
+from mrta_search.bench.heteromrta import load_env
+from mrta_search.dyn import perturb
+from mrta_search.dyn.baselines import rl_online as B1
+from mrta_search.solvers import rl
 
 torch.set_num_threads(1)
 SMALL = ("SA-BT-25-5-20", 0)
@@ -189,7 +189,7 @@ def _first_failure_case():
 
 def test_dyntaskenvx_static_reduction_bit_identical(net):
     """B1 on DynTaskEnvX (the env's own run_policy loop, decision-order coalitions) == rl.rollout, static."""
-    from cbba_sota.dyn.env import make_env
+    from mrta_search.dyn.env import make_env
 
     p = _path(*MID)
     for sample, seed in ((False, 0), (True, 17)):

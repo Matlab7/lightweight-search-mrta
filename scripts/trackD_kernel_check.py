@@ -1,7 +1,7 @@
 """Track D: the state-start kernel reduces to the pinned ALNS v2 kernel on static instances, bit for bit.
 
 Loads ``cbba_sota/solvers/_alns_kernels.py`` at commit 4cf5e04 from git (``git show``, never the working tree, which
-another workflow edits) and compares it with ``cbba_sota/dyn/rh_kernels.py`` on a static problem
+another workflow edits) and compares it with ``mrta_search/dyn/rh_kernels.py`` on a static problem
 (``PlanState.static``: every robot at its depot at time 0, nothing committed):
 1. instance arrays 0-11 equal the pinned ``_inst_arrays`` (copied below from 4cf5e04 ``alns.py``);
 2. ``schedule`` of random key-ordered minimal-cover plans: starts, finishes, arrivals, returns, tails, objective;
@@ -26,9 +26,9 @@ os.environ.setdefault("NUMBA_NUM_THREADS", "1")
 
 import numpy as np
 
-from cbba_sota.bench.configs import get
-from cbba_sota.dyn import rh_kernels as DK
-from cbba_sota.dyn.planner import (
+from mrta_search.bench.configs import get
+from mrta_search.dyn import rh_kernels as DK
+from mrta_search.dyn.planner import (
     PINNED_COMMIT,
     PlanState,
     Problem,
@@ -36,7 +36,7 @@ from cbba_sota.dyn.planner import (
     q_range,
     t_start_rule,
 )
-from cbba_sota.hetero import Instance, random_plan
+from mrta_search.hetero import Instance, random_plan
 
 ROOT = Path(__file__).resolve().parents[1]
 SETTINGS = ["MA-AT-25-5-50", "MA-AT-50-5-50", "SA-AT-50-5-50", "SA-BT-50-5-50", "MA-AT-50-5-200"]

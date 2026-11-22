@@ -1,11 +1,11 @@
-"""C1-dyn pilot helpers (cbba_sota/dyn/c1dyn.py): the B4 calibration probe, budget fit, labels and gate rules."""
+"""C1-dyn pilot helpers (mrta_search/dyn/c1dyn.py): the B4 calibration probe, budget fit, labels and gate rules."""
 from __future__ import annotations
 
 import numpy as np
 import pytest
 
-from cbba_sota.dyn import c1dyn
-from cbba_sota.dyn.stats import GMRatio, gm_ratio, pair_rows
+from mrta_search.dyn import c1dyn
+from mrta_search.dyn.stats import GMRatio, gm_ratio, pair_rows
 
 
 def _g(ratio: float, lo: float | None = None, hi: float | None = None) -> GMRatio:
@@ -16,11 +16,11 @@ def _g(ratio: float, lo: float | None = None, hi: float | None = None) -> GMRati
 
 def test_probe_leaves_the_sparc_episode_identical():
     """ProbeSPARC times B4 on every belief it plans, but adopts only SPARC's plans: same episode as plain SPARC."""
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn import perturb
-    from cbba_sota.dyn.controller import PlanController
-    from cbba_sota.dyn.env import make_env
-    from cbba_sota.dyn.methods import make_controller
+    from mrta_search.bench import configs
+    from mrta_search.dyn import perturb
+    from mrta_search.dyn.controller import PlanController
+    from mrta_search.dyn.env import make_env
+    from mrta_search.dyn.methods import make_controller
 
     setting, i, cell = "MA-AT-50-5-50", 0, "F1-R1"
     s = configs.get(setting)
@@ -112,10 +112,10 @@ def test_episode_summary():
 
 @pytest.mark.parametrize("name,params", [("SPARC", {}), ("B4", {"restarts": 3})])
 def test_hybrid_of_a_planner_with_itself_is_that_planner(name, params):
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn import perturb
-    from cbba_sota.dyn.env import make_env
-    from cbba_sota.dyn.methods import make_controller
+    from mrta_search.bench import configs
+    from mrta_search.dyn import perturb
+    from mrta_search.dyn.env import make_env
+    from mrta_search.dyn.methods import make_controller
 
     setting, i, cell = "SA-BT-50-5-50", 2, "F3-pf0.2-R2"
     s = configs.get(setting)
@@ -130,7 +130,7 @@ def test_hybrid_of_a_planner_with_itself_is_that_planner(name, params):
 def test_hybrid_labels():
     b4 = {"S": {"B4-eq": 44, "B4-2eq": 88, "B4-4eq": 176, "B4-impl": 12}}
     row = {"setting": "S", "tier": "light", "options": {"coalition": "auto"}}
-    m = "ctrl:cbba_sota.dyn.c1dyn:hybrid?first=SPARC&then=B4&restarts=44"
+    m = "ctrl:mrta_search.dyn.c1dyn:hybrid?first=SPARC&then=B4&restarts=44"
     assert c1dyn.labels({**row, "method": m}, b4) == ["SPARC-L>B4-eq"]
-    m = "ctrl:cbba_sota.dyn.c1dyn:hybrid?first=B4&then=SPARC&restarts=44"
+    m = "ctrl:mrta_search.dyn.c1dyn:hybrid?first=B4&then=SPARC&restarts=44"
     assert c1dyn.labels({**row, "method": m}, b4) == ["B4-eq>SPARC-L"]

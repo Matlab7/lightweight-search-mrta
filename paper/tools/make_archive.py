@@ -36,14 +36,16 @@ REDACT = [  # (pattern, replacement), applied in order to every text file
     (r"cbba_sota", "mrta_alns"),
     (r"cbba-sota", "mrta-alns"),
     (r"lightweight-search-mrta", "mrta-alns"),
+    (r"mrta_search", "mrta_alns"),
+    (r"mrta-search", "mrta-alns"),
     (r"CBJA", "REFSIM"),
     (r"cbja", "refsim"),
 ]
 FORBIDDEN = re.compile(
-    r"dhcho|jovyan|Matlab7|crdhsh|cbba_sota|cbba-sota|lightweight-search-mrta|cbja", re.IGNORECASE
+    r"dhcho|jovyan|Matlab7|crdhsh|cbba_sota|cbba-sota|lightweight-search-mrta|mrta[-_]search|cbja", re.IGNORECASE
 )
 TEXT = {".py", ".md", ".txt", ".csv", ".json", ".jsonl", ".sh", ".toml", ".patch", ".tex", ".yaml", ".yml", ".cfg"}
-CODE = ["src/cbba_sota", "scripts", "tests", "pyproject.toml"]
+CODE = ["src/mrta_search", "scripts", "tests", "pyproject.toml"]
 RESULTS = ["test", "val-c1", "ctas", "alns-v2", "phase1b", "trackD-week1"]
 SKIP_DIRS = {"__pycache__", ".pytest_cache", ".ruff_cache"}
 README = """# Supplementary archive (anonymous submission)

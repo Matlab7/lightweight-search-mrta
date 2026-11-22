@@ -1,5 +1,5 @@
 [project]
-name = "cbba-sota"
+name = "mrta-search"
 version = "0.0.1"
 description = "Decentralized multi-agent task allocation research"
 requires-python = ">=3.12"
@@ -14,7 +14,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["cbba_sota*"]
+include = ["mrta_search*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,4 +1,4 @@
-"""Cross-check the Track D T2 channel (cbba_sota.dyn.comm) against cbja/network.py on 5 small cases (spec 3.5).
+"""Cross-check the Track D T2 channel (mrta_search.dyn.comm) against cbja/network.py on 5 small cases (spec 3.5).
 
 cbja/network.py is an event-driven radio (analytic link boundaries, per-packet loss, in-flight drop when a link
 breaks) and needs simpy, so this script runs under the cbja venv:
@@ -31,7 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CBJA = Path("/home/jovyan/dev/cbja")
 sys.path[:0] = [str(ROOT / "src"), str(CBJA)]
 
-from cbba_sota.dyn.comm import (
+from mrta_search.dyn.comm import (
     Bernoulli,
     CRNKey,
     GilbertElliott,
@@ -40,7 +40,7 @@ from cbba_sota.dyn.comm import (
     in_range,
     pairwise_dist,
 )
-from cbba_sota.dyn.replica import ABANDON, KnowledgeBase, Layout
+from mrta_search.dyn.replica import ABANDON, KnowledgeBase, Layout
 
 TICK = 0.1
 

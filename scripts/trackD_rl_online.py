@@ -9,7 +9,7 @@ git commit of the code. Methods: RL(g.) (greedy decode) and RL(s.1) (one sampled
 ``policy_seed(instance key, CRN seed, method)``, so the variants of one method face the same policy randomness.
 Dev split only; the test split is refused by ``make_world``.
 
-Variants (``cbba_sota.dyn.baselines.rl_online``):
+Variants (``mrta_search.dyn.baselines.rl_online``):
 - ``x-decision``: DynTaskEnvX (ground truth, D1-D8, failures), native decision-order coalitions (the env's default
   for policies; bit-identical static reduction).
 - ``x-arrival``: DynTaskEnvX with D2 arrival-order coalitions, the rule plan-following methods are scored under.
@@ -43,7 +43,7 @@ def git_commit() -> str:
     try:
         head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True,
                               check=True).stdout.strip()
-        dirty = subprocess.run(["git", "status", "--porcelain", "--", "src/cbba_sota/dyn", "scripts/trackD_rl_online.py"],
+        dirty = subprocess.run(["git", "status", "--porcelain", "--", "src/mrta_search/dyn", "scripts/trackD_rl_online.py"],
                                cwd=ROOT, capture_output=True, text=True, check=False).stdout.strip()
         return head + ("+dirty(dyn)" if dirty else "")
     except (OSError, subprocess.CalledProcessError):
@@ -55,7 +55,7 @@ def row_id(setting, inst, cell, seed, method, variant) -> str:
 
 
 _NET = None
-_ENV_HASH = None  # hash of cbba_sota/dyn/{env,perturb}.py as imported by this worker
+_ENV_HASH = None  # hash of mrta_search/dyn/{env,perturb}.py as imported by this worker
 
 
 def _init():
@@ -64,8 +64,8 @@ def _init():
 
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
-    from cbba_sota.dyn import env as dyn_env
-    from cbba_sota.dyn.baselines import rl_online
+    from mrta_search.dyn import env as dyn_env
+    from mrta_search.dyn.baselines import rl_online
 
     # DynTaskEnvX.world hashes the files on disk when called, so it drifts if the env is edited during a run while
     # this worker keeps executing the code it imported. Rows record the import-time hash, and flag later edits.
@@ -74,8 +74,8 @@ def _init():
 
 
 def run_job(job: dict) -> list[dict]:
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn.baselines import rl_online as B1
+    from mrta_search.bench import configs
+    from mrta_search.dyn.baselines import rl_online as B1
 
     key = configs.get(job["setting"]).seed("dev", job["inst"])
     out = []
@@ -93,7 +93,7 @@ def run_job(job: dict) -> list[dict]:
                       method=method, world=label)
         row = {**base, **r.row()}
         if world == "x":
-            from cbba_sota.dyn.env import code_hash
+            from mrta_search.dyn.env import code_hash
 
             row["world"] = row["world"].rsplit("@", 1)[0] + f"@{_ENV_HASH}"
             row["env_code_hash"] = _ENV_HASH
@@ -116,8 +116,8 @@ def load_rows(path: Path) -> list[dict]:
 def summarize(rows: list[dict]) -> str:
     import numpy as np
 
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn import stats as S
+    from mrta_search.bench import configs
+    from mrta_search.dyn import stats as S
 
     lines = [(f"rows: {len(rows)}; commits: {sorted({r['commit'] for r in rows})}; env code (import-time hash): "
               f"{sorted({r.get('env_code_hash', '-') for r in rows})}; rows with env files edited mid-run: "

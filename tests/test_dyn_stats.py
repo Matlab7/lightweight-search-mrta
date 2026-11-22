@@ -1,11 +1,11 @@
-"""Tests for cbba_sota.dyn.stats (Track D analysis statistics)."""
+"""Tests for mrta_search.dyn.stats (Track D analysis statistics)."""
 from __future__ import annotations
 
 import numpy as np
 import pytest
 from scipy import stats as st
 
-from cbba_sota.dyn import stats as S
+from mrta_search.dyn import stats as S
 
 
 def _panel(n_inst=30, n_seed=3, effect=-0.05, sd_inst=0.06, sd_seed=0.02, seed=0):

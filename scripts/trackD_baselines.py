@@ -7,7 +7,7 @@
                   vs the CBGA-style grouping auction (and the makespans of every auction rule).
     report        paired comparisons SPARC-Light / method (``--ref``) on dev F1-F3 (``--families``) from ``scripts/trackD_run.py`` rows (the C1-dyn
                   pilot rows in ``runs/trackD/day2_preview`` plus this workflow's rows), pooled, per family and per
-                  setting (cluster bootstrap over instances, strata = settings; ``cbba_sota.dyn.stats``), success,
+                  setting (cluster bootstrap over instances, strata = settings; ``mrta_search.dyn.stats``), success,
                   per-event CPU, and the K3 / K4 verdicts (docs/trackD-spec.md Section 8).
 
     .venv/bin/python scripts/trackD_baselines.py calibrate-b2 --procs 4
@@ -41,10 +41,10 @@ def _cal_one(args) -> dict:
     import torch
 
     torch.set_num_threads(1)
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn import perturb
-    from cbba_sota.dyn.baselines import rl_mpc
-    from cbba_sota.dyn.env import make_env
+    from mrta_search.bench import configs
+    from mrta_search.dyn import perturb
+    from mrta_search.dyn.baselines import rl_mpc
+    from mrta_search.dyn.env import make_env
 
     setting, inst, seed, cell = case
     clones: list[bytes] = []
@@ -99,10 +99,10 @@ def fidelity_b6(a) -> None:
     start time vs the CBGA-style grouping auction's (planner-model schedule of each auction's t = 0 plan)."""
     import numpy as np
 
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn.baselines import cbta
-    from cbba_sota.dyn.planner import PlanState, Problem, check_plan
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench import configs
+    from mrta_search.dyn.baselines import cbta
+    from mrta_search.dyn.planner import PlanState, Problem, check_plan
+    from mrta_search.hetero import Instance
 
     def schedule(state, plan):
         prob = Problem(state)
@@ -160,11 +160,11 @@ def load_rows(dirs: list[str], settings=PRIMARY, families=("F1", "F2", "F3")) ->
 def label(r: dict) -> str:
     """Method label: runner method name, the tier, and the coalition rule when it is not the default."""
     m = r["method"]
-    short = {"ctrl:cbba_sota.dyn.baselines.rl_mpc:make_controller": "B2",
-             "ctrl:cbba_sota.dyn.baselines.cpsat_tiers:make_controller": "B3",
-             "ctrl:cbba_sota.dyn.baselines.cbta:make_controller": "B6"}
+    short = {"ctrl:mrta_search.dyn.baselines.rl_mpc:make_controller": "B2",
+             "ctrl:mrta_search.dyn.baselines.cpsat_tiers:make_controller": "B3",
+             "ctrl:mrta_search.dyn.baselines.cbta:make_controller": "B6"}
     name, _, q = m.partition("?")
-    name = short.get(name, name)
+    name = short.get(name.replace("ctrl:cbba_sota.", "ctrl:mrta_search.", 1), name)
     if q:
         name += "?" + q
     tier = r.get("tier", "native")
@@ -179,7 +179,7 @@ def label(r: dict) -> str:
 def report(a) -> None:
     import numpy as np
 
-    from cbba_sota.dyn.stats import gm_ratio, pair_rows
+    from mrta_search.dyn.stats import gm_ratio, pair_rows
 
     rows = [r for r in load_rows(a.dirs, families=tuple(a.families)) if r["seed"] in set(a.seeds)]
     for r in rows:

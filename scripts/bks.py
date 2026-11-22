@@ -56,9 +56,9 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import compare_dev as cd
 
-from cbba_sota.bench import configs, runtime
-from cbba_sota.bench.configs import RUNS_DIR
-from cbba_sota.hetero.replay import succeeded
+from mrta_search.bench import configs, runtime
+from mrta_search.bench.configs import RUNS_DIR
+from mrta_search.hetero.replay import succeeded
 
 OUT = RUNS_DIR / "bks"
 ANYTIME = (RUNS_DIR / "anytime", RUNS_DIR / "anytime_c1", RUNS_DIR / "anytime_test")  # timed campaigns
@@ -100,8 +100,8 @@ def _init(cpus: list[int]) -> None:
     import importlib
 
     runtime.pin(cpus)
-    importlib.import_module("cbba_sota.solvers.cpsat")  # import cost outside the budgets
-    from cbba_sota.solvers import alns
+    importlib.import_module("mrta_search.solvers.cpsat")  # import cost outside the budgets
+    from mrta_search.solvers import alns
 
     alns._warmup()
 
@@ -112,8 +112,8 @@ def _row(inst, plan, t0: float, c0: float, k0: float) -> dict:
 
 
 def run_job(name: str, split: str, i: int, kind: str, width: int, seconds: float, hint_routes=None) -> dict:
-    from cbba_sota.hetero import Plan, evaluate
-    from cbba_sota.solvers import alns, cpsat, greedy
+    from mrta_search.hetero import Plan, evaluate
+    from mrta_search.solvers import alns, cpsat, greedy
 
     inst, _, fp = cd._load(name, split, i)
     t0, c0, k0 = time.perf_counter(), time.process_time(), cd._children_cpu()

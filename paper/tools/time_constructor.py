@@ -18,9 +18,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from make_tables import SETTINGS
 
-from cbba_sota.bench import configs
-from cbba_sota.hetero import load_instance
-from cbba_sota.solvers import greedy
+from mrta_search.bench import configs
+from mrta_search.hetero import load_instance
+from mrta_search.solvers import greedy
 
 
 def timed(fn, reps: int) -> float:

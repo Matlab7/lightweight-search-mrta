@@ -7,10 +7,10 @@ from itertools import pairwise
 import numpy as np
 import pytest
 
-from cbba_sota.bench.configs import HETEROMRTA_DIR
-from cbba_sota.hetero import Instance, evaluate, random_plan, replay
-from cbba_sota.hetero.replay import replay_routes
-from cbba_sota.solvers import cpsat, ctas
+from mrta_search.bench.configs import HETEROMRTA_DIR
+from mrta_search.hetero import Instance, evaluate, random_plan, replay
+from mrta_search.hetero.replay import replay_routes
+from mrta_search.solvers import cpsat, ctas
 
 RAL = HETEROMRTA_DIR / "RALTestSet"
 

@@ -1,7 +1,7 @@
 """Track D C1-dyn pilot (docs/trackD-spec.md Section 8 days 2-3; Section 7 T1-T3; gates K1, K2). Dev split only.
 
     calibrate  B4 equal-CPU restart count per setting, from SPARC-Light episodes in DynTaskEnvX in which every
-               re-plan also times B4 on the same belief (``cbba_sota.dyn.c1dyn.ProbeSPARC``). Writes
+               re-plan also times B4 on the same belief (``mrta_search.dyn.c1dyn.ProbeSPARC``). Writes
                runs/trackD/c1dyn/calib.jsonl and b4_budget.json (frozen before the campaign is analysed).
     analyze    reads the campaign rows (scripts/trackD_run.py --out runs/trackD/c1dyn) and writes the gate tables
                and CSVs to runs/trackD/c1dyn/analysis/ (and --copy-to, e.g. docs/results/trackD-week1).
@@ -46,9 +46,9 @@ def _parse_range(spec: str) -> list[int]:
 # --- calibrate ---------------------------------------------------------------------------------------------------------
 def _init_calib() -> None:
     os.environ.update(_ONE)
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn.planner import PlanState, RHPlanner
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench import configs
+    from mrta_search.dyn.planner import PlanState, RHPlanner
+    from mrta_search.hetero import Instance
 
     # load / compile every kernel once, so that no probed event pays JIT or cache loading
     inst = Instance.from_pickle(configs.get("MA-AT-25-5-50").instance_path("dev", 0))
@@ -60,11 +60,11 @@ def _init_calib() -> None:
 
 
 def calib_job(job: dict) -> dict | None:
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn import perturb
-    from cbba_sota.dyn.c1dyn import ProbeSPARC
-    from cbba_sota.dyn.controller import PlanController
-    from cbba_sota.dyn.env import make_env
+    from mrta_search.bench import configs
+    from mrta_search.dyn import perturb
+    from mrta_search.dyn.c1dyn import ProbeSPARC
+    from mrta_search.dyn.controller import PlanController
+    from mrta_search.dyn.env import make_env
 
     s = configs.get(job["setting"])
     rz = perturb.realize_instance(job["setting"], "dev", job["instance"], job["seed"], job["cell"])
@@ -80,7 +80,7 @@ def calib_job(job: dict) -> dict | None:
 def cmd_calibrate(a) -> None:
     import numpy as np
 
-    from cbba_sota.dyn.c1dyn import restarts_equal_cpu
+    from mrta_search.dyn.c1dyn import restarts_equal_cpu
 
     OUT.mkdir(parents=True, exist_ok=True)
     probe = tuple(int(x) for x in a.probe.split(","))
@@ -176,9 +176,9 @@ def load_rows(rows_dir: Path, want_hash: str | None) -> tuple[list[dict], dict]:
 def cmd_analyze(a) -> None:
     import numpy as np
 
-    from cbba_sota.dyn import perturb
-    from cbba_sota.dyn import stats as S
-    from cbba_sota.dyn.c1dyn import (
+    from mrta_search.dyn import perturb
+    from mrta_search.dyn import stats as S
+    from mrta_search.dyn.c1dyn import (
         CLUSTER_KEYS,
         PAIR_KEYS,
         b4_levels,

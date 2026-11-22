@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bks
 from make_tables import SETTINGS, label, read
 
-from cbba_sota.bench import configs
+from mrta_search.bench import configs
 
 DOCS = ROOT / "docs" / "results"
 NAMES = {"ALNS2": "ALNS", "ALNS1": "ALNS, earlier version", "CPSAT": "CP-LNS", "PCPSAT": "Parallel CP-LNS",

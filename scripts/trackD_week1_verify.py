@@ -1,6 +1,6 @@
 """Track D week-1 memo: independent re-computation of the gate numbers from the raw rows (dev split only).
 
-This script does not import ``cbba_sota.dyn.stats`` or the agents' analysis scripts. It re-reads the JSONL rows
+This script does not import ``mrta_search.dyn.stats`` or the agents' analysis scripts. It re-reads the JSONL rows
 under ``runs/trackD`` and recomputes, with its own pairing and its own bootstrap (numpy only):
 
     c1     C1-dyn and baseline ratios SPARC-L / method (T1/K1, K2, K3, K4, B6), pooled F1-F3 and per setting
@@ -50,11 +50,12 @@ def _label(r: dict, b4eq: dict) -> str:
     if m.startswith("B4?restarts=") and "&" not in m:
         k = int(m.split("=")[1])
         return "B4-eq" if b4eq.get(r["setting"]) == k else f"B4-r{k}"
-    if m.startswith("ctrl:cbba_sota.dyn.baselines.rl_mpc"):
+    controller = m.replace("ctrl:cbba_sota.", "ctrl:mrta_search.", 1)
+    if controller.startswith("ctrl:mrta_search.dyn.baselines.rl_mpc"):
         return "B2x3" if "scale=3" in m else "B2"
-    if m.startswith("ctrl:cbba_sota.dyn.baselines.cpsat_tiers"):
+    if controller.startswith("ctrl:mrta_search.dyn.baselines.cpsat_tiers"):
         return f"B3-{tier}"
-    if m.startswith("ctrl:cbba_sota.dyn.baselines.cbta"):
+    if controller.startswith("ctrl:mrta_search.dyn.baselines.cbta"):
         return "B6:" + m.split("?", 1)[1]
     if m in ("RL(g.)", "RL(s.1)", "greedy"):
         return m + ("-arr" if coal == "arrival" else "")

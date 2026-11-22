@@ -8,9 +8,9 @@ import resource
 import sys
 import time
 
-from cbba_sota.bench import configs, runtime
-from cbba_sota.hetero import Instance, replay
-from cbba_sota.solvers import ctas
+from mrta_search.bench import configs, runtime
+from mrta_search.hetero import Instance, replay
+from mrta_search.solvers import ctas
 
 name = sys.argv[1]
 s = configs.get(name)

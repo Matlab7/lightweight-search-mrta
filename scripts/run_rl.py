@@ -27,7 +27,7 @@ from typing import NamedTuple
 
 import numpy as np
 
-from cbba_sota.bench import runtime
+from mrta_search.bench import runtime
 
 METHODS = {"g": ("RL(g.)", 1, False), "s10": ("RL(s.10)", 10, True), "s64": ("RL(s.64)", 64, True),
            "s256": ("RL(s.256)", 256, True)}
@@ -51,7 +51,7 @@ def _init(devices, lockstep: bool) -> None:
     global _net, _device, _lockstep
     import torch
 
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
@@ -61,8 +61,8 @@ def _init(devices, lockstep: bool) -> None:
 
 def _sample(path: str, seeds: list[int], sample: bool):
     """(samples, device, fingerprint of the instance they ran on)."""
-    from cbba_sota.hetero import Instance
-    from cbba_sota.solvers import rl
+    from mrta_search.hetero import Instance
+    from mrta_search.solvers import rl
 
     data = Path(path).read_bytes()
     fp = runtime.fingerprint(Instance.from_env(rl.loads_env(data)))
@@ -72,7 +72,7 @@ def _sample(path: str, seeds: list[int], sample: bool):
 
 
 def _replay(path: str, routes) -> tuple[float, bool]:
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     return rl.replay(Path(path).read_bytes(), routes)
 
@@ -87,8 +87,8 @@ def done_keys(path: Path) -> set[tuple[int, str]]:
 
 
 def main() -> None:
-    from cbba_sota.bench import configs
-    from cbba_sota.solvers.rl import merge, sample_seed
+    from mrta_search.bench import configs
+    from mrta_search.solvers.rl import merge, sample_seed
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--settings", nargs="*", default=[s.name for s in configs.SETTINGS])
@@ -163,7 +163,7 @@ def main() -> None:
 
 
 def _write(args, key, res, device: str, fp: str, replayed: tuple[float, bool]) -> None:
-    from cbba_sota.bench import configs
+    from mrta_search.bench import configs
 
     name, i, m = key
     method, n, _ = METHODS[m]

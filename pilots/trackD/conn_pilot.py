@@ -28,8 +28,12 @@ from scipy.sparse.csgraph import connected_components
 
 HERE = Path(__file__).resolve().parent
 SNAP = HERE / "_snap"
-sys.path.insert(0, str(SNAP if (SNAP / "cbba_sota").exists() else HERE.parents[1] / "src"))
-from cbba_sota.hetero import Instance, Plan, evaluate  # noqa: E402
+if (SNAP / "cbba_sota").is_dir():
+    sys.path.insert(0, str(SNAP))
+    from cbba_sota.hetero import Instance, Plan, evaluate
+else:
+    sys.path.insert(0, str(HERE.parents[1] / "src"))
+    from mrta_search.hetero import Instance, Plan, evaluate
 
 DT = 0.1
 STATION = np.array([0.5, 0.5])

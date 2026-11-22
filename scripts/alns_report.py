@@ -23,9 +23,9 @@ from functools import cache
 
 import numpy as np
 
-from cbba_sota.bench.configs import HETEROMRTA_DIR, MAX_TIME, ROOT, RUNS_DIR
-from cbba_sota.bench.runtime import fingerprint, is_stale, read_rows
-from cbba_sota.hetero.replay import replay_routes, succeeded
+from mrta_search.bench.configs import HETEROMRTA_DIR, MAX_TIME, ROOT, RUNS_DIR
+from mrta_search.bench.runtime import fingerprint, is_stale, read_rows
+from mrta_search.hetero.replay import replay_routes, succeeded
 
 PILOT = ROOT / "pilots" / "heteromrta"
 sys.path.insert(0, str(ROOT / "scripts"))

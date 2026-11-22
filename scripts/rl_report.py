@@ -15,9 +15,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from cbba_sota.bench import SETTINGS, configs
-from cbba_sota.bench.runtime import is_stale, read_rows
-from cbba_sota.hetero.replay import succeeded
+from mrta_search.bench import SETTINGS, configs
+from mrta_search.bench.runtime import is_stale, read_rows
+from mrta_search.hetero.replay import succeeded
 
 
 def load_rows(split: str, root: Path) -> pd.DataFrame:

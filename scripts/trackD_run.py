@@ -4,7 +4,7 @@ A case is (setting, split, instance, CRN seed, cell, method, budget tier, world 
 of these; a case is done when some ``rows*.jsonl`` in the output directory holds a row with that id, status
 ``completed`` or ``excluded`` and the current env code hash (``--any-code`` accepts rows from older env code).
 Each row says which world produced it (``world``: DynTaskEnvX, coalition rule, observations, lease, env code hash)
-and carries the git commit (and whether ``cbba_sota/dyn`` or this script had uncommitted changes).
+and carries the git commit (and whether ``mrta_search/dyn`` or this script had uncommitted changes).
 
 Methods:
   RL(g.) / RL(s.1)          the released checkpoint online (``RLPolicy``), policy seed keyed by (instance, seed)
@@ -12,7 +12,7 @@ Methods:
   OL-construct              descriptive smoke reference, only for cells without release: our constructor plan
                             (8 restarts) on the nominal instance, followed open loop (no re-planning)
   SPARC, SPARC-rk, ins-only, every-event, open-loop, B3, B4, B5
-                            rolling planners (``cbba_sota.dyn.methods``) through ``PlanController`` in ``run_plan``;
+                            rolling planners (``mrta_search.dyn.methods``) through ``PlanController`` in ``run_plan``;
                             need ``--tier light`` or ``heavy`` (budgets in ``methods.TIERS``, overridable by
                             parameters, e.g. ``'B4?restarts=15'``); planner seeds come from the belief (spec 4.1)
   ctrl:<module>:<factory>   a plan-following controller: ``factory(env, realization, tier, seed, **params)``
@@ -20,13 +20,13 @@ Methods:
   pol:<module>:<factory>    a policy: ``factory(env, realization, tier, seed, **params)`` returns an object with
                             ``selectable(env, i)`` / ``act(env, i)`` (``run_policy``)
   Parameters follow after '?' as k=v pairs joined by '&' (numbers parsed), e.g.
-  ``ctrl:cbba_sota.dyn.sparc:make_controller?iters=300``.
+  ``ctrl:mrta_search.dyn.sparc:make_controller?iters=300``.
 
 Budget tiers (docs/trackD-spec.md Section 3.6): native | light | heavy; passed to factories, recorded in rows.
 Deterministic budgets only; nothing here reads a wall clock inside an episode (CPU is measured, not used).
 
 Worlds: ``--world env`` (default) is the ground truth ``DynTaskEnvX``. ``--world executor`` runs the rolling
-planners in the hand-written executor (``cbba_sota.dyn.executor``), allowed for speed only where gate K0 holds
+planners in the hand-written executor (``mrta_search.dyn.executor``), allowed for speed only where gate K0 holds
 (``scripts/trackD_k0.py``: executor == env trajectories at the verified env/executor code); its rows say so in
 ``world`` and carry the executor code hash.
 
@@ -102,7 +102,7 @@ def case_id(case: dict) -> str:
 
 
 def build_cases(args) -> list[dict]:
-    from cbba_sota.dyn import perturb
+    from mrta_search.dyn import perturb
 
     cells = list(args.cells or [])
     for fam in args.families or []:
@@ -111,12 +111,18 @@ def build_cases(args) -> list[dict]:
     for c in cells:
         perturb.cell(c)  # validates
     opts = world_options(args)
+    # Keep recorded method IDs, case IDs and RNG seeds stable across the package rename.
+    methods = [
+        "ctrl:cbba_sota." + method.removeprefix("ctrl:mrta_search.")
+        if method.startswith("ctrl:mrta_search.") else method
+        for method in args.methods
+    ]
     cases = []
     for s in args.settings:
         for i in parse_range(args.instances):
             for seed in parse_range(args.seeds):
                 for c in cells:
-                    for m in args.methods:
+                    for m in methods:
                         case = {"setting": s, "split": args.split, "instance": i, "seed": seed, "cell": c,
                                 "family": perturb.cell(c).family, "method": m, "tier": args.tier, "options": opts}
                         case["case_id"] = case_id(case)
@@ -131,7 +137,7 @@ def git_state() -> dict:
     def git(*a):
         return subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True, check=False).stdout.strip()
 
-    dirty = git("status", "--porcelain", "--", "src/cbba_sota/dyn", "scripts/trackD_run.py")
+    dirty = git("status", "--porcelain", "--", "src/mrta_search/dyn", "scripts/trackD_run.py")
     return {"git": git("rev-parse", "--short=12", "HEAD"), "git_dirty_dyn": bool(dirty)}
 
 
@@ -151,7 +157,7 @@ def _init_worker() -> None:
 def _net():
     global _NET
     if _NET is None:
-        from cbba_sota.solvers import rl
+        from mrta_search.solvers import rl
 
         _NET = rl.load_policy("cpu")
     return _NET
@@ -167,16 +173,18 @@ def policy_seed(instance_key: int, crn_seed: int, method: str) -> int:
 
 def _factory(spec: str):
     _, module, attr = spec.split(":", 2)
+    if module.startswith("cbba_sota."):
+        module = "mrta_search." + module.removeprefix("cbba_sota.")
     return getattr(importlib.import_module(module), attr)
 
 
 def run_case(case: dict, prov: dict) -> dict:
     import numpy as np
 
-    from cbba_sota.bench import configs
-    from cbba_sota.dyn import perturb
-    from cbba_sota.dyn.env import code_hash
-    from cbba_sota.dyn.methods import PLANNERS, make_policy
+    from mrta_search.bench import configs
+    from mrta_search.dyn import perturb
+    from mrta_search.dyn.env import code_hash
+    from mrta_search.dyn.methods import PLANNERS, make_policy
 
     row = {k: case[k] for k in ("case_id", "setting", "split", "instance", "seed", "cell", "family", "method",
                                  "tier")}
@@ -214,8 +222,8 @@ def _run_env(s, case: dict, rz, options: dict, name: str, params: dict, pseed: i
     """One episode in the ground truth ``DynTaskEnvX``."""
     import numpy as np
 
-    from cbba_sota.dyn.env import NearestPolicy, RLPolicy, make_env
-    from cbba_sota.dyn.methods import PLANNERS, make_controller
+    from mrta_search.dyn.env import NearestPolicy, RLPolicy, make_env
+    from mrta_search.dyn.methods import PLANNERS, make_controller
 
     env = make_env(s.instance_path(case["split"], case["instance"]), rz, **options)
     if name in PLANNERS:
@@ -227,7 +235,7 @@ def _run_env(s, case: dict, rz, options: dict, name: str, params: dict, pseed: i
     elif name == "OL-construct":
         if rz.cell.release != "none":
             raise ValueError("OL-construct needs every task known at t = 0")
-        from cbba_sota.solvers import greedy
+        from mrta_search.solvers import greedy
 
         plan = greedy.construct(env.nominal_instance(), restarts=int(params.get("restarts", 8)), seed=pseed)
         ep = env.run_plan(routes=plan.routes())
@@ -258,8 +266,8 @@ def _run_executor(s, case: dict, rz, policy) -> dict:
     """A rolling planner in the hand-written executor (K0-verified world; see the module docstring)."""
     import numpy as np
 
-    from cbba_sota.dyn.executor import Executor, Realization
-    from cbba_sota.hetero import Instance
+    from mrta_search.dyn.executor import Executor, Realization
+    from mrta_search.hetero import Instance
 
     inst = Instance.from_pickle(s.instance_path(case["split"], case["instance"]))
     ex = Executor(inst, Realization.from_perturb(rz), detect_h=rz.detect_after)
@@ -280,7 +288,7 @@ def _run_executor(s, case: dict, rz, policy) -> dict:
 
 
 def load_done(out: Path, any_code: bool) -> set[str]:
-    from cbba_sota.dyn.env import code_hash
+    from mrta_search.dyn.env import code_hash
 
     current = code_hash()
     done = set()
@@ -295,7 +303,7 @@ def load_done(out: Path, any_code: bool) -> set[str]:
 
 
 def main(argv=None) -> None:
-    from cbba_sota.dyn import perturb
+    from mrta_search.dyn import perturb
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--settings", nargs="+", default=list(perturb.PRIMARY_SETTINGS))

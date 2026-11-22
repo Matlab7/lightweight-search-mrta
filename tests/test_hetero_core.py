@@ -6,9 +6,9 @@ from dataclasses import replace
 import numpy as np
 import pytest
 
-from cbba_sota.bench.configs import HETEROMRTA_DIR, Setting
-from cbba_sota.bench.heteromrta import TaskEnv, generate_env, load_env, save_env
-from cbba_sota.hetero import (
+from mrta_search.bench.configs import HETEROMRTA_DIR, Setting
+from mrta_search.bench.heteromrta import TaskEnv, generate_env, load_env, save_env
+from mrta_search.hetero import (
     Instance,
     Plan,
     evaluate,

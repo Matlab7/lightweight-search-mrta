@@ -19,7 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def _pilot_module() -> tuple[object, list[int]]:
     """The pilot module with ``insert_best`` wrapped to count calls (``lns`` looks it up as a module global)."""
-    from cbba_sota.bench.configs import HETEROMRTA_DIR
+    from mrta_search.bench.configs import HETEROMRTA_DIR
 
     sys.path.insert(0, str(HETEROMRTA_DIR))
     path = os.path.join(ROOT, "pilots", "heteromrta", "coalition_lns_pilot.py")
@@ -47,9 +47,9 @@ def main() -> None:
     for var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMBA_NUM_THREADS"):
         os.environ[var] = "1"
 
-    from cbba_sota.bench.configs import DATA_DIR
-    from cbba_sota.hetero import Instance
-    from cbba_sota.solvers.alns import _warmup, solve
+    from mrta_search.bench.configs import DATA_DIR
+    from mrta_search.hetero import Instance
+    from mrta_search.solvers.alns import _warmup, solve
 
     _warmup()
     if args.pilot:

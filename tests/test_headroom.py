@@ -9,8 +9,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from cbba_sota.bench import configs, runtime
-from cbba_sota.bench.configs import SETTINGS, get
+from mrta_search.bench import configs, runtime
+from mrta_search.bench.configs import SETTINGS, get
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 

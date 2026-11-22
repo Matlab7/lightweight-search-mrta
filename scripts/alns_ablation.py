@@ -38,8 +38,8 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import run_alns
 
-from cbba_sota.bench import configs, runtime
-from cbba_sota.bench.configs import MAX_TIME, RUNS_DIR
+from mrta_search.bench import configs, runtime
+from mrta_search.bench.configs import MAX_TIME, RUNS_DIR
 
 SETTINGS = ("MA-AT-25-5-50", "SA-AT-50-5-50", "MA-AT-50-5-50", "SA-BT-50-5-50", "MA-AT-50-5-200", "SA-BT-25-5-50")
 
@@ -67,7 +67,7 @@ def _rows(path: Path) -> dict[int, dict]:
 def run(args) -> None:
     for var in run_alns.THREAD_VARS:
         os.environ[var] = "1"
-    from cbba_sota.hetero import Instance
+    from mrta_search.hetero import Instance
 
     spec = json.loads(Path(args.spec).read_text())
     jobs = []

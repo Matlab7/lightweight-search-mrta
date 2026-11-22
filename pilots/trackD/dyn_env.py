@@ -37,8 +37,12 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 SNAP = Path(__file__).resolve().parent / "_snap"  # frozen copy of cbba_sota (the package is edited concurrently)
-sys.path.insert(0, str(SNAP if (SNAP / "cbba_sota").exists() else ROOT / "src"))
-from cbba_sota.bench.heteromrta import TaskEnv, load_env  # noqa: E402  (adds third_party/HeteroMRTA to sys.path)
+if (SNAP / "cbba_sota").is_dir():
+    sys.path.insert(0, str(SNAP))
+    from cbba_sota.bench.heteromrta import TaskEnv, load_env
+else:
+    sys.path.insert(0, str(ROOT / "src"))
+    from mrta_search.bench.heteromrta import TaskEnv, load_env
 
 TICK = 0.1  # env.dt
 

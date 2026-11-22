@@ -5,12 +5,12 @@ from itertools import combinations, pairwise
 import numpy as np
 import pytest
 
-from cbba_sota.bench.configs import HETEROMRTA_DIR, Setting
-from cbba_sota.bench.heteromrta import generate_env, save_env
-from cbba_sota.hetero import Instance, Plan, evaluate, forward_pass, random_plan, replay
-from cbba_sota.solvers import _alns_kernels as K
-from cbba_sota.solvers._alns_pool import Exchange
-from cbba_sota.solvers.alns import ALNSConfig, _Search, portfolio, solve
+from mrta_search.bench.configs import HETEROMRTA_DIR, Setting
+from mrta_search.bench.heteromrta import generate_env, save_env
+from mrta_search.hetero import Instance, Plan, evaluate, forward_pass, random_plan, replay
+from mrta_search.solvers import _alns_kernels as K
+from mrta_search.solvers._alns_pool import Exchange
+from mrta_search.solvers.alns import ALNSConfig, _Search, portfolio, solve
 
 RAL = HETEROMRTA_DIR / "RALTestSet"
 SPECS = [("SA-BT", 9, 3, 20, 3), ("SA-AT", 15, 5, 20, 5), ("MA-AT", 25, 5, 50, 5), ("MA-AT", 50, 5, 120, 5)]
@@ -197,7 +197,7 @@ def test_exchange_publishes_and_adopts(instances):
 
 
 def test_portfolio_is_minimal_and_not_worse_than_dispatch(instances):
-    from cbba_sota.solvers.greedy import dispatch
+    from mrta_search.solvers.greedy import dispatch
 
     for inst in instances[1:]:
         plan = portfolio(inst, until=0.0, builds=6)

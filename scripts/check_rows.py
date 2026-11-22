@@ -35,8 +35,8 @@ from concurrent.futures import ProcessPoolExecutor
 from functools import cache
 from pathlib import Path
 
-from cbba_sota.bench import runtime
-from cbba_sota.bench.configs import MAX_TIME, ROOT, RUNS_DIR
+from mrta_search.bench import runtime
+from mrta_search.bench.configs import MAX_TIME, ROOT, RUNS_DIR
 
 SUPERSEDED = RUNS_DIR / "_superseded"
 REDTEAM = ROOT / "pilots" / "heteromrta" / "redteam"
@@ -64,8 +64,8 @@ def _json_instances(stem: str) -> dict:
 
 def load(key: tuple):
     """(instance, env source for the env loops) or None if it no longer exists."""
-    from cbba_sota.bench import configs
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench import configs
+    from mrta_search.hetero import Instance
 
     if key[0] == "json":
         inst = _json_instances(key[1]).get(key[2])
@@ -80,7 +80,7 @@ def load(key: tuple):
 
 def _score_routes(inst, routes) -> tuple[str, float | None]:
     """Env score of stored plan routes (0- or 1-based), or the reason they are not a plan of ``inst``."""
-    from cbba_sota.hetero import Plan, evaluate, replay
+    from mrta_search.hetero import Plan, evaluate, replay
 
     ids = {j for r in routes for j in r}
     one_based = bool(ids) and 0 not in ids and max(ids) == inst.n_tasks
@@ -95,8 +95,8 @@ def _score_routes(inst, routes) -> tuple[str, float | None]:
 
 def check(row: dict, inst, source, fp: str, rescore: bool = True) -> tuple[str, str]:
     """(status, reason) of one row against the current instance."""
-    from cbba_sota.hetero import replay_routes
-    from cbba_sota.solvers import greedy
+    from mrta_search.hetero import replay_routes
+    from mrta_search.solvers import greedy
 
     if "fingerprint" in row:
         if row["fingerprint"] != fp:

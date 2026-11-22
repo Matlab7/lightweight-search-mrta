@@ -2,7 +2,7 @@
 
 - Static reduction: on a static problem the planner's prediction equals the core evaluator and the env replay.
 - Noise-free static runs: SPARC in the event loop is within 1% of open-loop ALNS (spec Section 8, day 1 gate).
-  World: ``cbba_sota.dyn.executor`` (surrogate, pre-K0); its open-loop makespan is checked against env replay.
+  World: ``mrta_search.dyn.executor`` (surrogate, pre-K0); its open-loop makespan is checked against env replay.
 - Plans are minimal covers and key-ordered at every re-plan, also under releases, noise and failures (residual
   repair of committed coalitions, G4 fallback), and every episode completes (G5, good communication).
 - Determinism (G3): the same belief and event index give the same plan; budgets are iteration counts.
@@ -11,17 +11,17 @@
 import numpy as np
 import pytest
 
-from cbba_sota.bench.configs import get
-from cbba_sota.dyn.executor import Executor, make_realization
-from cbba_sota.dyn.planner import (
+from mrta_search.bench.configs import get
+from mrta_search.dyn.executor import Executor, make_realization
+from mrta_search.dyn.planner import (
     PlanState,
     RHPlanner,
     SearchConfig,
     check_plan,
     state_digest,
 )
-from cbba_sota.dyn.sparc import NOISE_KINDS, SPARC, OpenLoop, SPARCConfig, derive_seed
-from cbba_sota.hetero import Instance, Plan, evaluate, replay
+from mrta_search.dyn.sparc import NOISE_KINDS, SPARC, OpenLoop, SPARCConfig, derive_seed
+from mrta_search.hetero import Instance, Plan, evaluate, replay
 
 SETTINGS = ["MA-AT-25-5-50", "MA-AT-50-5-50", "SA-AT-50-5-50", "SA-BT-50-5-50"]
 H = {"MA-AT-25-5-50": 25.0, "MA-AT-50-5-50": 15.0, "SA-AT-50-5-50": 20.0, "SA-BT-50-5-50": 12.0}

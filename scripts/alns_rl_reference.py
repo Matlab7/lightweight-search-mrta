@@ -19,7 +19,7 @@ def _init() -> None:
     global _net
     import torch
 
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     torch.set_num_threads(1)
     torch.set_num_interop_threads(1)
@@ -29,7 +29,7 @@ def _init() -> None:
 def _rollout(path: str, seed: int, sample: bool) -> dict:
     from pathlib import Path
 
-    from cbba_sota.solvers import rl
+    from mrta_search.solvers import rl
 
     s = rl.sample_many(Path(path).read_bytes(), _net, [seed], sample=sample)
     ms, ok = rl.replay(Path(path).read_bytes(), s.best.routes)
@@ -48,8 +48,8 @@ def main() -> None:
     for var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMBA_NUM_THREADS"):
         os.environ[var] = "1"
 
-    from cbba_sota.bench import configs
-    from cbba_sota.solvers import rl
+    from mrta_search.bench import configs
+    from mrta_search.solvers import rl
 
     jobs = []
     for name in args.settings:

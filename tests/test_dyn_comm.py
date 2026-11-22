@@ -15,7 +15,7 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-from cbba_sota.dyn.comm import (
+from mrta_search.dyn.comm import (
     Bernoulli,
     CRNKey,
     GilbertElliott,
@@ -27,7 +27,7 @@ from cbba_sota.dyn.comm import (
     components,
     connectivity_radius,
 )
-from cbba_sota.dyn.protocols import (
+from mrta_search.dyn.protocols import (
     ARMS,
     ProtocolConfig,
     ProtocolRunner,
@@ -40,7 +40,7 @@ from cbba_sota.dyn.protocols import (
     reach_matrix,
     sparc,
 )
-from cbba_sota.dyn.replica import (
+from mrta_search.dyn.replica import (
     ABANDON,
     ABSENT,
     FINISH,
@@ -266,7 +266,7 @@ def test_byte_budget_is_respected_and_backlog_drains():
 def test_beacon_reaches_out_of_range_nodes():
     L = Layout(3, 2, 1)
     kb = KnowledgeBase(L)
-    from cbba_sota.dyn.comm import Beacon
+    from mrta_search.dyn.comm import Beacon
     tr = GossipTransport(kb, 0.01, NoLoss(), budget=math.inf, beacon=Beacon(period=1.0, loss=0.0))
     pos = np.array([[0.0, 0.0], [0.5, 0.0], [1.0, 0.0], [0.5, 0.5]])
     alive = np.ones(L.N, bool)
@@ -363,7 +363,7 @@ def test_failure_needs_silence_and_on_site_evidence():
 def test_overdue_commitment_of_a_silent_robot_is_failure_evidence():
     """C3 rule 4.6(c): an arrival (or finish) promised in the last record and overdue by h_f counts as an absent
     record for that task and as failure evidence, even with no witness."""
-    from cbba_sota.dyn.replica import overdue_absents
+    from mrta_search.dyn.replica import overdue_absents
 
     kb = _kb_with({0: (5.0, WAIT, 1, ())})
     kb.heartbeat(2, 1.0, TRAVEL, target=1, t_ref=3.0, force=True)  # ETA 3, then silent
@@ -583,7 +583,7 @@ class ToyWorld:
                 j = self.route[b].pop(0)
                 self.depart(b, t, self.inst.loc[j], j, TRAVEL)
             elif self.mode[b] == IDLE and self.runner.arm.rally and not np.allclose(self.xy[b], self.station):
-                from cbba_sota.dyn.protocols import outside_station_component
+                from mrta_search.dyn.protocols import outside_station_component
                 if outside_station_component(bel, self.runner.cfg.member_window):
                     self.depart(b, t, self.station, -1, RALLY)
 
@@ -705,7 +705,7 @@ def test_idle_trigger_fires_again_when_a_robot_goes_idle_again():
 
 
 def _dev_instance():
-    from cbba_sota.hetero import Instance
+    from mrta_search.hetero import Instance
     return Instance.from_pickle(ROOT / "data" / "hetero" / "MA-AT-25-5-50" / "dev" / "env_0.pkl")
 
 
@@ -715,8 +715,8 @@ def _dev_instance():
 def test_agent_b_planner_runs_through_the_runner(arm_name, rho, frozen_model):
     """Integration: agent B's RHPlanner (SPARC kernel) on replicas, real dev instance (MA-AT-25-5-50 dev 0), toy
     world physics (no noise). Checks the adapter produces valid plans and the episode completes."""
-    planner_mod = pytest.importorskip("cbba_sota.dyn.planner")
-    from cbba_sota.dyn.protocols import plan_state, rh_planner
+    planner_mod = pytest.importorskip("mrta_search.dyn.planner")
+    from mrta_search.dyn.protocols import plan_state, rh_planner
     inst = _dev_instance()
     T, A = inst.n_tasks, inst.n_agents
     rng = np.random.default_rng(0)

@@ -22,10 +22,10 @@ from itertools import pairwise
 import numpy as np
 import pytest
 
-from cbba_sota.bench import runtime
-from cbba_sota.bench.configs import HETEROMRTA_DIR, MAX_TIME, ROOT, RUNS_DIR
-from cbba_sota.bench.heteromrta import dumps_env
-from cbba_sota.hetero import (
+from mrta_search.bench import runtime
+from mrta_search.bench.configs import HETEROMRTA_DIR, MAX_TIME, ROOT, RUNS_DIR
+from mrta_search.bench.heteromrta import dumps_env
+from mrta_search.hetero import (
     Instance,
     Plan,
     evaluate,
@@ -33,8 +33,8 @@ from cbba_sota.hetero import (
     replay,
     replay_routes,
 )
-from cbba_sota.hetero.replay import env_from_instance, succeeded
-from cbba_sota.solvers import cpsat, greedy, rl
+from mrta_search.hetero.replay import env_from_instance, succeeded
+from mrta_search.solvers import cpsat, greedy, rl
 
 REDTEAM = ROOT / "pilots" / "heteromrta" / "redteam"
 RAL0 = HETEROMRTA_DIR / "RALTestSet" / "env_0.pkl"
@@ -269,7 +269,13 @@ def test_rl_references_are_rollout_scores(tmp_path, monkeypatch):
     cd = _script("compare_dev")
     assert cd._score({"makespan": 204.0, "success": True}) == cd.FAIL
     assert cd._score({"makespan": 199.0, "success": True}) == 199.0
-    spec = importlib.util.spec_from_file_location("analyze", RUNS_DIR / "baselines" / "analyze.py")
+
+
+def test_local_baseline_analysis_uses_rollout_scores():
+    path = RUNS_DIR / "baselines" / "analyze.py"
+    if not path.is_file():
+        pytest.skip("local baseline analysis script not present")
+    spec = importlib.util.spec_from_file_location("analyze", path)
     analyze = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(analyze)
     assert analyze.score({"makespan": 204.0, "success": True}) == MAX_TIME
@@ -424,7 +430,7 @@ def test_alns_campaign_writes_provenance_and_recomputes_stale_rows(tmp_path, mon
     sys.path.insert(0, str(SCRIPTS))
     import run_alns
 
-    from cbba_sota.bench import configs
+    from mrta_search.bench import configs
 
     monkeypatch.setattr(configs, "RUNS_DIR", tmp_path / "runs")
     monkeypatch.setattr(configs, "ROOT", tmp_path)

@@ -2,7 +2,7 @@
 
 Every task is released at 0 and nothing is perturbed, so predictions are exact. Open loop executes the first plan
 (``--iters0`` ALNS iterations); SPARC starts from the same plan and, with ``--idle eager``, re-plans (300 iterations)
-whenever a robot runs out of work while open tasks exist. World: ``cbba_sota.dyn.executor`` (surrogate; its static
+whenever a robot runs out of work while open tasks exist. World: ``mrta_search.dyn.executor`` (surrogate; its static
 open-loop makespan equals env replay bit for bit, tested). With ``--idle env`` (the trigger semantics of
 ``DynTaskEnvX``) SPARC never re-plans after t = 0 and equals open loop exactly.
 
@@ -28,11 +28,11 @@ def _threads() -> None:
 def job(a: tuple) -> tuple:
     setting, i, keys, iters0, idle = a
     _threads()
-    from cbba_sota.bench.configs import get
-    from cbba_sota.dyn.executor import Executor, make_realization
-    from cbba_sota.dyn.planner import SearchConfig
-    from cbba_sota.dyn.sparc import SPARC, OpenLoop, SPARCConfig
-    from cbba_sota.hetero import Instance
+    from mrta_search.bench.configs import get
+    from mrta_search.dyn.executor import Executor, make_realization
+    from mrta_search.dyn.planner import SearchConfig
+    from mrta_search.dyn.sparc import SPARC, OpenLoop, SPARCConfig
+    from mrta_search.hetero import Instance
 
     st = get(setting)
     inst = Instance.from_pickle(st.instance_path("dev", i))

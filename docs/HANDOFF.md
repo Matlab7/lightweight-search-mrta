@@ -37,6 +37,8 @@ The user's pods share `/home/jovyan` (repo, runs, data, venv) but not processes:
 
 ## 2. Setting up the new server
 
+The current checkout installs the `mrta_search` package from `src/`. Reinstall the editable package after updating an existing environment. The frozen experiment commits retain their original package name.
+
 Reference versions from the old server:
 - Python 3.12.3, uv 0.12.19.
 - Packages: torch 2.8.0, numpy 2.5.3, numba 0.67.0, ortools 9.15.6755, scipy 1.18.1, pandas 3.0.6, matplotlib 3.11.2, pyyaml 6.0.3, natsort 8.4.0, pytest 9.1.1, ruff 0.16.9.
@@ -105,7 +107,7 @@ The summary tables in `docs/results/` are versioned; `docs/results/val-c1/analyz
 - Never message a subagent that is running inside a Workflow. The message starts a second copy of the agent, and stopping it kills both. To change instructions, stop the workflow, edit the script and relaunch.
 - Stop old workflow runs before relaunching; runs from an ended session can auto-resume.
 - Kill the orphaned process groups of stopped agents.
-- On a shared host, timed numbers are only valid with pinned lanes and a throttling filter (`cbba_sota/bench/runtime.py`, `scripts/anytime.py`). Budgets inside episodes must be deterministic (iterations), never wall-clock.
+- On a shared host, timed numbers are only valid with pinned lanes and a throttling filter (`src/mrta_search/bench/runtime.py`, `scripts/anytime.py`). Budgets inside episodes must be deterministic (iterations), never wall-clock.
 - Tune on `dev` only. `val` is for untuned dry runs; `test` is touched once, after the freeze.
 - Run timed campaigns from a clean worktree of a fixed commit (`scripts/campaign_worktree.sh`, using the `PYTHONPATH` printed by the script),
   launched with `nohup setsid`; the runners refuse a dirty tree and a mismatched checkout.
