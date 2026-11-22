@@ -303,7 +303,9 @@ PCPSAT 7, ALNS2 2), CTAS-D rows ended within 1.05 x B1, and no lane process died
 ```
 repo="$(git rev-parse --show-toplevel)"         # run from the main checkout
 "$repo/scripts/campaign_worktree.sh" <commit>
-cd "$repo/.worktrees/run" && export PYTHONPATH="$PWD"
+cd "$repo/.worktrees/run"
+# Historical commits have a flat package. The script prints the appropriate path.
+export PYTHONPATH="$PWD"
 PY="$repo/.venv/bin/python"
 # dev tuning (commit 3fa7e7e; runs/tune_dev), per stage:
 $PY scripts/anytime.py tune --settings SA-BT-25-5-50 SA-BT-50-5-50 SA-AT-50-5-50 MA-AT-25-5-50 MA-AT-50-5-50 --n 10 \

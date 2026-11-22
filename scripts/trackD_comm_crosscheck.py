@@ -29,7 +29,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 CBJA = Path("/home/jovyan/dev/cbja")
-sys.path[:0] = [str(ROOT), str(CBJA)]
+sys.path[:0] = [str(ROOT / "src"), str(CBJA)]
 
 from cbba_sota.dyn.comm import (
     Bernoulli,

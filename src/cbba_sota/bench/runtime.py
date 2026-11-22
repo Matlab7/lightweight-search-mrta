@@ -31,7 +31,7 @@ import numpy as np
 from cbba_sota.bench.configs import ROOT
 
 _DATA = ("req", "loc", "dur", "ab", "depot", "species")
-SOURCE = ("cbba_sota", "scripts", "pyproject.toml")  # what code_version hashes
+SOURCE = ("src/cbba_sota", "scripts", "pyproject.toml")  # what code_version hashes
 _CPU_STAT = ("/sys/fs/cgroup/cpu.stat", "/sys/fs/cgroup/cpu/cpu.stat", "/sys/fs/cgroup/cpu,cpuacct/cpu.stat")
 
 
@@ -113,9 +113,12 @@ def frozen_source(path: Path | None = None) -> dict[str, str] | None:
     text = path.read_text() if path.exists() else ""
     if not re.search(r"^Status: FROZEN", text, re.MULTILINE):
         return None
-    pattern = r"^- `?(cbba_sota|scripts|pyproject\.toml)`? (?:tree|blob): `?([0-9a-f]{40})`?"
+    # The published pre-registration records the original flat-layout checkout.
+    legacy = ("cbba_sota", *SOURCE[1:])
+    entries = "|".join(re.escape(entry) for entry in (*SOURCE, legacy[0]))
+    pattern = rf"^- `?({entries})`? (?:tree|blob): `?([0-9a-f]{{40}})`?"
     found = dict(re.findall(pattern, text, re.MULTILINE))
-    return found if set(found) == set(SOURCE) else None
+    return found if set(found) in (set(SOURCE), set(legacy)) else None
 
 
 def require_frozen(root: Path = ROOT) -> str:
@@ -139,8 +142,9 @@ def require_clean(allow_dirty: bool = False) -> str:
     also exits if the running script belongs to another checkout than the imported ``cbba_sota`` (a campaign worktree
     run without ``PYTHONPATH``), whose commit the rows would otherwise name."""
     script_root = Path(sys.argv[0]).resolve().parents[1] if sys.argv and sys.argv[0] else None
-    if script_root is not None and (script_root / "cbba_sota").is_dir() and script_root != ROOT:
-        raise SystemExit(f"script from {script_root} imports cbba_sota from {ROOT}: set PYTHONPATH={script_root}")
+    if script_root is not None and (script_root / "pyproject.toml").is_file() and script_root != ROOT:
+        source = script_root / "src" if (script_root / "src").is_dir() else script_root
+        raise SystemExit(f"script from {script_root} imports cbba_sota from {ROOT}: set PYTHONPATH={source}")
     version = code_version()
     if ("dirty" in version or version == "unknown") and not allow_dirty:
         raise SystemExit(f"source tree is dirty or unknown ({version}): commit before a timed campaign, or pass "

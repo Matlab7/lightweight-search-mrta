@@ -43,7 +43,7 @@ FORBIDDEN = re.compile(
     r"dhcho|jovyan|Matlab7|crdhsh|cbba_sota|cbba-sota|lightweight-search-mrta|cbja", re.IGNORECASE
 )
 TEXT = {".py", ".md", ".txt", ".csv", ".json", ".jsonl", ".sh", ".toml", ".patch", ".tex", ".yaml", ".yml", ".cfg"}
-CODE = ["cbba_sota", "scripts", "tests", "pyproject.toml"]
+CODE = ["src/cbba_sota", "scripts", "tests", "pyproject.toml"]
 RESULTS = ["test", "val-c1", "ctas", "alns-v2", "phase1b", "trackD-week1"]
 SKIP_DIRS = {"__pycache__", ".pytest_cache", ".ruff_cache"}
 README = """# Supplementary archive (anonymous submission)

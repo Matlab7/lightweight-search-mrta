@@ -28,7 +28,7 @@ from scipy.sparse.csgraph import connected_components
 
 HERE = Path(__file__).resolve().parent
 SNAP = HERE / "_snap"
-sys.path.insert(0, str(SNAP if (SNAP / "cbba_sota").exists() else HERE.parents[1]))
+sys.path.insert(0, str(SNAP if (SNAP / "cbba_sota").exists() else HERE.parents[1] / "src"))
 from cbba_sota.hetero import Instance, Plan, evaluate  # noqa: E402
 
 DT = 0.1

@@ -236,10 +236,10 @@ def _git() -> dict:
 
     from cbba_sota.dyn import executor
 
-    dyn = ROOT / "cbba_sota" / "dyn"
+    dyn = ROOT / "src" / "cbba_sota" / "dyn"
     ctl = hashlib.sha1((dyn / "controller.py").read_bytes()).hexdigest()[:10]
     return {"git": git("rev-parse", "--short=12", "HEAD"),
-            "git_dirty_dyn": bool(git("status", "--porcelain", "--", "cbba_sota/dyn")),
+            "git_dirty_dyn": bool(git("status", "--porcelain", "--", "src/cbba_sota/dyn")),
             "executor_hash": executor.code_hash(), "controller_hash": ctl}
 
 

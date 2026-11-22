@@ -25,7 +25,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src"))
 
 FIXED = ["CEN-F", "HYB", "REP-clamp", "INF-r"]
 VARIANTS = {"V1": "HYB", "V2": "SPARC", "V3": "SPARC-V3"}

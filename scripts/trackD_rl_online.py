@@ -43,7 +43,7 @@ def git_commit() -> str:
     try:
         head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True,
                               check=True).stdout.strip()
-        dirty = subprocess.run(["git", "status", "--porcelain", "--", "cbba_sota/dyn", "scripts/trackD_rl_online.py"],
+        dirty = subprocess.run(["git", "status", "--porcelain", "--", "src/cbba_sota/dyn", "scripts/trackD_rl_online.py"],
                                cwd=ROOT, capture_output=True, text=True, check=False).stdout.strip()
         return head + ("+dirty(dyn)" if dirty else "")
     except (OSError, subprocess.CalledProcessError):

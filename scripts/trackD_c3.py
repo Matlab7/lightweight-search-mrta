@@ -26,7 +26,7 @@ import traceback
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "src"))
 
 MAX_PROCS = 22  # the task's CPU cap is 24 processes (parent + workers)
 GRID = [(g, L) for g in (0.3, 1.0, 3.0) for L in (10.0, 30.0, 60.0)]

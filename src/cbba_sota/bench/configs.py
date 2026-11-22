@@ -17,7 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 HETEROMRTA_DIR = ROOT / "third_party" / "HeteroMRTA"
 DATA_DIR = ROOT / "data" / "hetero"
 RUNS_DIR = ROOT / "runs"

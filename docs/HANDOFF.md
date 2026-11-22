@@ -60,7 +60,7 @@ scripts/setup_third_party.sh   # HeteroMRTA @ db51e29 + numpy-2 patch; Sadcher (
 tar -xzf cbba-sota-runs-2026-09-28.tar.gz
 
 OMP_NUM_THREADS=1 NUMBA_NUM_THREADS=1 .venv/bin/python -m pytest tests/ -q    # 333 passed on the old server
-.venv/bin/ruff check cbba_sota scripts tests
+.venv/bin/ruff check src scripts tests
 ```
 
 Notes:
@@ -107,7 +107,7 @@ The summary tables in `docs/results/` are versioned; `docs/results/val-c1/analyz
 - Kill the orphaned process groups of stopped agents.
 - On a shared host, timed numbers are only valid with pinned lanes and a throttling filter (`cbba_sota/bench/runtime.py`, `scripts/anytime.py`). Budgets inside episodes must be deterministic (iterations), never wall-clock.
 - Tune on `dev` only. `val` is for untuned dry runs; `test` is touched once, after the freeze.
-- Run timed campaigns from a clean worktree of a fixed commit (`scripts/campaign_worktree.sh`, `PYTHONPATH` set to it),
+- Run timed campaigns from a clean worktree of a fixed commit (`scripts/campaign_worktree.sh`, using the `PYTHONPATH` printed by the script),
   launched with `nohup setsid`; the runners refuse a dirty tree and a mismatched checkout.
 - Keep lanes x 8 CPUs plus other load below the cgroup quota (57.6 CPUs on `dhcho-dev-2gpus-0`: 6 lanes at most), or
   whole campaigns get throttled.

@@ -131,7 +131,7 @@ def git_state() -> dict:
     def git(*a):
         return subprocess.run(["git", "-C", str(ROOT), *a], capture_output=True, text=True, check=False).stdout.strip()
 
-    dirty = git("status", "--porcelain", "--", "cbba_sota/dyn", "scripts/trackD_run.py")
+    dirty = git("status", "--porcelain", "--", "src/cbba_sota/dyn", "scripts/trackD_run.py")
     return {"git": git("rev-parse", "--short=12", "HEAD"), "git_dirty_dyn": bool(dirty)}
 
 
