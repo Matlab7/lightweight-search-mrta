@@ -20,8 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 LIMIT = 25 * 1024 * 1024
 REDACT = [  # (pattern, replacement), applied in order to every text file
-    (r"/home/jovyan/dev/paperworks/lightweight-search-mrta/\.worktrees/run", "<campaign-worktree>"),
-    (r"/home/jovyan/dev/paperworks/lightweight-search-mrta", "<repo>"),
+    (re.escape(str(ROOT / ".worktrees" / "run")), "<campaign-worktree>"),
+    (re.escape(str(ROOT)), "<repo>"),
     (r"/home/jovyan/dev/cbba-sota-run", "<campaign-worktree>"),
     (r"/home/jovyan/dev/cbba-sota", "<repo>"),
     (r"/home/jovyan/dev/cbja", "<other-project>"),
